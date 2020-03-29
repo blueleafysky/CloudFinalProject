@@ -66,14 +66,22 @@
 * Commands:
 ```	
 mm-webrecord /tmp/nytimes chromium-browser --ignore-certificate-errors --user-data-dir=/tmp/nonexistent$(date +%s%N) www.nytimes.com
-mm-replay /tmp/nytimes   
+mm-webreplay /tmp/nytimes   
 ifconfig
 mm-delay 50
 ifconfig
 mm-link --meter-downlink 12mbps.txt 12mbps.txt
 ```
-* ```ifconfig``` shows that in different shells, you are in different namespaces, hence different interfaces
+* a graphing window should appear, comparing time to throughput (downlink thruput)
+```ifconfig``` shows that in different shells, you are in different namespaces, hence different interfaces
 * ```mm-webrecord``` records nytimes, and then replay of those files emulates the nytimes recording
 * ```mm-replay``` sets up replay environment
 * ```mm-delay 50``` sets up rtt 100ms
-* WARNING: if you are getting ```std::runtime_error: xcb...``` errors, that means X is not working. 
+* WARNING: if you are getting ```std::runtime_error: xcb...``` errors, that means X11 is not working
+* Once the ```mm-link``` command starts running, launch nytimes by
+```
+chromium-browser --incognito http://www.nytimes.com
+``` 
+* you should now see the below figures, as it attempts to load in the page with 12mbps
+* ![mm-link startup](documentation_screenshots/figure3.png "Title"){:height="50%" width="50%"}
+* ![mm-link startup](documentation_screenshots/figure4.png "Title"){:height="50%" width="50%"}
