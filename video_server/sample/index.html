@@ -68,15 +68,17 @@
     <div class="container">
         <div class="row title-header">
 
-            <div class="branding">
+            <!-- <div class="branding">
               <a href="http://dashif.org/" target="_blank"><img class="image" src="app/img/if.png"/></a>
               <span id="big-title">Reference Client</span>
                 <span ng-bind="version"></span>
-                <span id="commit-info"><!-- commit-info --></span>
-            </div>
+                <span id="commit-info">commit-info</span>
+            </div> -->
+            <h1 class="headline">Cloud Computing Spring 2020 Adaptive Bitrate Selection</h1>
+            <span class="author">Jason Zhang, Simon Zeng, Will Ye</span>
 
             <!-- Using iframe to solve pre-flight request issue from GIT-->
-            <div class="top-buttons">
+            <!-- <div class="top-buttons">
                 <iframe id="star-button"
                         src="//ghbtns.com/github-btn.html?user=Dash-Industry-Forum&repo=dash.js&type=watch&count=true&size=large"
                         height="30" width="150">
@@ -85,7 +87,7 @@
                         src="//ghbtns.com/github-btn.html?user=Dash-Industry-Forum&repo=dash.js&type=fork&count=true&size=large"
                         height="30" width="150" >
                 </iframe>
-            </div>
+            </div> -->
         </div>
 
         <div class="row">
@@ -207,26 +209,6 @@
                     </label>
                 </div>
             </div>
-
-            <div class="options-item">
-                <div class="options-item-title">DRM Options</div>
-                <div class="options-item-body">
-                    <div class="dropdown" data-toggle="tooltip" data-placement="left"
-                           title="Please select a DRM Key System">
-                        <button class="btn btn-primary dropdown-toggle" type="button" id="menu1" data-toggle="dropdown">DRM KeySystem
-                            <span class="caret"></span>
-                        </button>
-                        <ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
-                           <li ng-repeat="item in drmKeySystems"><a ng-click="setDrmKeySystem(item)">{{item}}</a></li>
-                        </ul>
-                    </div>
-                    <p><label  class="options-label" >{{drmKeySystem}}</label></p>
-                    <div id="drmLicenseForm" ng-show="drmKeySystem">
-                        <label class="options-label">License URL:</label>
-                        <input type="text" class="form-control" placeholder="" ng-model="drmLicenseURL">
-                    </div>
-                </div>
-            </div>
             <div class="options-item">
                 <div class="options-item-title">Initial Settings</div>
                 <div class="options-item-body">
@@ -236,22 +218,6 @@
                     <input type="text" class="form-control" placeholder="value in kbps" ng-model="minVideoBitrate">
                     <label class="options-label">Maximum bitrate Video:</label>
                     <input type="text" class="form-control" placeholder="value in kbps" ng-model="maxVideoBitrate">
-                    <label class="options-label">Audio:</label>
-                    <input type="text" class="form-control" placeholder="audio initial lang, e.g. 'en'" ng-model="initialSettings.audio">
-                    <label class="options-label">Video:</label>
-                    <input type="text" class="form-control" placeholder="initial role, e.g. 'alternate'" ng-model="initialSettings.video">        <label class="options-label">Text:</label>
-                    <input type="text" class="form-control" placeholder="text initial lang, e.g. 'en'" ng-model="initialSettings.text">
-                    <label class="topcoat-checkbox" data-toggle="tooltip" data-placement="right"
-                           title="Enable subtitle on loading text">
-                        <input type="checkbox" id="enableTextAtLoading" ng-model="initialSettings.textEnabled">
-                        Enable Text At Loading
-                    </label>
-                    <label class="topcoat-checkbox" data-toggle="tooltip" data-placement="right"
-                           title="Force text streaming">
-                        <input type="checkbox" id="enableForceTextStreaming" ng-model="initialSettings.forceTextStreaming">
-                        Force Text Streaming
-                    </label>
-
                 </div>
             </div>
             <div class="options-item">
@@ -281,59 +247,6 @@
                     </label>
                 </div>
             </div>
-            <div class="options-item">
-                <div class="options-item-title">Debug</div>
-                <div class="options-item-body">
-                    <label class="options-label">Log Level:</label>
-                    <label data-toggle="tooltip" data-placement="right"
-                           title="Don't write any log message in browser console">
-                        <input  type="radio" id="log-none" value="none" autocomplete="off" name="log-level" ng-click="setLogLevel()" >
-                        NONE
-                    </label>
-                    <label data-toggle="tooltip" data-placement="right"
-                           title="Sets log level of to LOG_LEVEL_FATAL">
-                           <input  type="radio" id="log-fatal" value="fatal" autocomplete="off" name="log-level" ng-click="setLogLevel()" >
-                        FATAL
-                    </label>
-                    <label data-toggle="tooltip" data-placement="right"
-                           title="Sets log level of to LOG_LEVEL_ERROR">
-                           <input  type="radio" id="log-error" value="error" autocomplete="off" name="log-level" ng-click="setLogLevel()" >
-                        ERROR
-                    </label>
-                    <label data-toggle="tooltip" data-placement="right"
-                            title="Sets log level of to LOG_LEVEL_WARNING">
-                           <input  type="radio" id="log-warning" value="warning" autocomplete="off" name="log-level" ng-click="setLogLevel()" >
-                        WARNING
-                    </label>
-                    <label data-toggle="tooltip" data-placement="right"
-                            title="Sets log level of to LOG_LEVEL_INFO">
-                           <input  type="radio" id="log-info" value="info" autocomplete="off" name="log-level" checked="checked" ng-click="setLogLevel()" >
-                        INFO
-                    </label>
-                    <label data-toggle="tooltip" data-placement="right"
-                            title="Sets log level of to LOG_LEVEL_DEBUG">
-                           <input  type="radio" id="log-debug" value="debug" autocomplete="off" name="log-level" ng-click="setLogLevel()" >
-                        DEBUG
-                    </label>
-                </div>
-            </div>
-            <div class="options-item">
-                <div class="options-item-title">CMCD</div>
-                <div class="options-item-body">
-                    <label class="topcoat-checkbox" data-toggle="tooltip" data-placement="right"
-                           title="Enables reporting of CMCD parameters via query parameters">
-                        <input type="checkbox" ng-model="cmcdEnabled" ng-change="toggleCmcdEnabled()" ng-checked="cmcdEnabled">
-                        Enable CMCD Reporting
-                    </label>
-                    <label class="options-label">Session ID:</label>
-                    <input type="text" class="form-control" placeholder="mandatory session id" ng-model="cmcdSessionId">
-                    <label class="options-label">Content ID:</label>
-                    <input type="text" class="form-control" placeholder="content id" ng-model="cmcdContentId">
-                    <label class="options-label">Device ID:</label>
-                    <input type="text" class="form-control" placeholder="device id" ng-model="cmcdDeviceId">
-                </div>
-            </div>
-
         </div>
 
         <!--VIDEO PLAYER / CONTROLS -->
@@ -543,7 +456,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <h3 class="footer-text">Contributors:</h3>
+                    <h3 class="footer-text">References:</h3>
                     <a ng-repeat="item in contributors" class="footer-text" href="{{item.link}}" target="_blank">
                         <img ng-show="hasLogo(item)" ng-src="{{item.logo}}" alt="{{item.link}}"/>
                         <span class="contributor" ng-show="!hasLogo(item)">{{item.name}}</span>

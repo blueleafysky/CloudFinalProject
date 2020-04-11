@@ -6,18 +6,21 @@
     <body>
         <div>
             <video id="videoPlayer" controls="true"></video>
+            <video id="videoPlayer2" controls="true"></video>
         </div>
 	<script src="dash.all.min.js"></script>
         <script>
             (function(){
-                var url = "/Manifest.mpd";
+                var url = "http://localhost/Manifest.mpd";
                 var player = dashjs.MediaPlayer().create()
+                var player2 = dashjs.MediaPlayer().create()
 
                 var abr_algorithms = {0: 'Default', 1: 'Fixed Rate (0)', 2: 'Buffer Based', 3: 'Rate Based', 4: 'RL', 5: 'Festive', 6: 'Bola'};
                 var abr_id = 2;
 
                 if ( abr_id > 1 && abr_id != 6 ) {
                     player.enablerlABR(true);
+                    player2.enablerlABR(true);
                 }
 
                 // uncomment this block if you want to change the buffer size that dash tries to maintain
@@ -26,12 +29,19 @@
                 player.setBufferToKeep(60);
                 player.setBufferPruningInterval(60);
 
+                player2.setBufferTimeAtTopQuality(60);
+                player2.setStableBufferTime(60);
+                player2.setBufferToKeep(60);
+                player2.setBufferPruningInterval(60);
                 player.initialize(document.querySelector("#videoPlayer"), url, true);
+                player2.initialize(document.querySelector("#videoPlayer2"), url, true);
 
                 if ( abr_id == 6 ) { //BOLA
                     player.enableBufferOccupancyABR(true);
+                    player2.enableBufferOccupancyABR(true);
                 }
                 player.setAbrAlgorithm(abr_id);
+                player2.setAbrAlgorithm(abr_id);
 
                 if ( abr_id in abr_algorithms ) {
                     document.title = abr_algorithms[abr_id];
