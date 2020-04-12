@@ -85,3 +85,6 @@ chromium-browser --incognito http://www.nytimes.com
 * you should now see the below figures, as it attempts to load in the page with 12mbps
 * ![mm-link startup](documentation_screenshots/figure3.png "Title"){:height="50%" width="50%"}
 * ![mm-link startup](documentation_screenshots/figure4.png "Title"){:height="50%" width="50%"}
+* graph interpretation
+	* shaded region is link capacity
+	* on a smaller mbps (3, maybe), the graphing line should split out to red and blue. Blue is throughput webervers trying to use on downlink, red is what linkshell allows them to use
