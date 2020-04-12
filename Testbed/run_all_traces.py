@@ -26,15 +26,18 @@ print command_rl
 
 # Processes
 # process_rl = subprocess.Popen(command_rl, stdout=subprocess.PIPE, shell=True)
+# time.sleep(0.1)
 
-# uncomment lines after processes if not testing for stdout, only call def execute to bubble output of subprocess
+# process_rl.wait()
+
+
+# uncomment lines after Processes comment  if not testing for stdout, only call def execute to bubble output of subprocess
 def execute(command_rl):
 	process_rl = subprocess.Popen(command_rl, stdout=subprocess.PIPE, shell=True)
 	for stdout_line in iter(popen.stdout.readline, ""):
 		yield stdout_line
 	process_rl.stdout.close()
+	time.sleep(0.1)
+
+	process_rl.wait()
 execute(command_rl)
-
-time.sleep(0.1)
-
-process_rl.wait()
