@@ -33,8 +33,7 @@ def execute(command_rl):
 	for stdout_line in iter(popen.stdout.readline, ""):
 		yield stdout_line
 	process_rl.stdout.close()
-
-execulte(command_rl)
+execute(command_rl)
 
 time.sleep(0.1)
 
