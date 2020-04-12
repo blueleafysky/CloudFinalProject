@@ -53,8 +53,8 @@ try:
 	os.system('cp -r ' + default_chrome_user_dir + ' ' + chrome_user_dir)
 	
 	# start abr algorithm server
-	# if abr_algo == 'RL':
-	# 	command = 'exec /usr/bin/python ../rl_server/rl_server_no_training.py ' + trace_file
+	if abr_algo == 'RL':
+		command = 'exec /usr/bin/python ../rl_server/rl_server_no_training.py ' + trace_file
 	# elif abr_algo == 'fastMPC':
 	# 	command = 'exec /usr/bin/python ../rl_server/mpc_server.py ' + trace_file
 	# elif abr_algo == 'robustMPC':
@@ -86,7 +86,7 @@ try:
 	display.stop()
 	
 	# kill abr algorithm server
-	# proc.send_signal(signal.SIGINT)
+	proc.send_signal(signal.SIGINT)
 	# proc.kill()
 	
 	print 'done'

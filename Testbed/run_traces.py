@@ -44,7 +44,7 @@ def main():
                       abr_algo + ' ' + str(RUN_TIME) + ' ' +
                       process_id + ' ' + f + ' ' + str(sleep_time),
                       stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
-
+            print "out of subprocess"
             (out, err) = proc.communicate()
 
             if out == 'done\n':
