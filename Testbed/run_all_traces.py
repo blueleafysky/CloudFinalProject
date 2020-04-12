@@ -8,7 +8,7 @@ import subprocess
 TRACE_PATH = '../cooked_traces/'
 
 with open('./chrome_retry_log', 'wb') as f:
-	f.write('chrome retry log\n')
+    f.write('chrome retry log\n')
 
 # for Mahimahi initial setup
 os.system('sudo sysctl -w net.ipv4.ip_forward=1')
@@ -33,12 +33,12 @@ print command_rl
 
 # uncomment lines after Processes comment  if not testing for stdout, only call def execute to bubble output of subprocess
 def execute(command_rl):
-	print "running command_RL"
-	process_rl = subprocess.Popen(command_rl, stdout=subprocess.PIPE, shell=True)
-	# for stdout_line in iter(popen.stdout.readline, ""):
-	# 	yield stdout_line
-	# process_rl.stdout.close()
-	while True:
+    print "running command_RL"
+    process_rl = subprocess.Popen(command_rl, stdout=subprocess.PIPE, shell=True)
+    # for stdout_line in iter(popen.stdout.readline, ""):
+    #   yield stdout_line
+    # process_rl.stdout.close()
+    while True:
         process_rl = process.stdout.readline()
         if output == '' and process.poll() is not None:
             break
@@ -46,7 +46,7 @@ def execute(command_rl):
             print output.strip()
 
 
-	time.sleep(0.1)
+    time.sleep(0.1)
 
-	process_rl.wait()
+    process_rl.wait()
 execute(command_rl)
