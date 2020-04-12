@@ -26,6 +26,10 @@ print command_rl
 
 # Processes
 process_rl = subprocess.Popen(command_rl, stdout=subprocess.PIPE, shell=True)
+
+for stdout_line in iter(popen.stdout.readline, ""):
+        yield stdout_line 
+
 time.sleep(0.1)
 
 process_rl.wait()
