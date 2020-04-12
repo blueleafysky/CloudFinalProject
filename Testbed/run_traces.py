@@ -47,6 +47,7 @@ def main():
 			if out == 'done\n':
 				break
 			else:
+				print "retry log posted"
 				with open('./chrome_retry_log', 'ab') as log:
 					log.write(abr_algo + '_' + f + '\n')
 					log.write(out + '\n')
