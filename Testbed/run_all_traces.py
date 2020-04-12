@@ -25,9 +25,12 @@ command_rl = 'python run_traces.py ' + TRACE_PATH + ' ' + ABR_ALGO + ' ' + str(P
 print command_rl
 
 # Processes
-process_rl = subprocess.Popen(command_rl, stdout=subprocess.PIPE, shell=True)
+# process_rl = subprocess.Popen(command_rl, stdout=subprocess.PIPE, shell=True)
 
-for stdout_line in iter(popen.stdout.readline, ""):
+# uncomment lines after processes if not testing for stdout, only call def execute to bubble output of subprocess
+def execute(command_rl):
+	process_rl = subprocess.Popen(command_rl, stdout=subprocess.PIPE, shell=True)
+	for stdout_line in iter(popen.stdout.readline, ""):
         yield stdout_line 
 
 time.sleep(0.1)
