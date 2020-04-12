@@ -11,11 +11,18 @@ RANDOM_SEED = 42
 RUN_TIME = 320  # sec
 MM_DELAY = 40   # millisec
 
+print "run_traces started"
 def main():
 	trace_path = sys.argv[1]
 	abr_algo = sys.argv[2]
 	process_id = sys.argv[3]
 	ip = sys.argv[4]
+
+	print trace_path
+	print abr_algo
+	print process_id
+	print ip
+	
 
 	sleep_vec = range(1, 10)  # random sleep second
 
