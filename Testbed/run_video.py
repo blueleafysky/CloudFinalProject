@@ -62,8 +62,8 @@ try:
 	# else:
 	# 	command = 'exec /usr/bin/python ../rl_server/simple_server.py ' + abr_algo + ' ' + trace_file
 	
-	# proc = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
-	# sleep(2)
+	proc = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+	sleep(2)
 	
 	# to not display the page in browser
 	display = Display(visible=0, size=(800,600))
