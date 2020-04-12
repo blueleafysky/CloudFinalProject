@@ -5,7 +5,7 @@ from mininet.net import Mininet
 from mininet.link import TCLink
 from mininet.topo import Topo
 from mininet.log import setLogLevel
-from mininet.node import OVSController
+# from mininet.node import OVSController
 
 class NetworkTopology(Topo):
     def __init__(self, **opts):
@@ -23,7 +23,7 @@ if __name__ == '__main__':
     setLogLevel( 'info' )
     topo = NetworkTopology()
     net = Mininet(topo=topo, link=TCLink, autoSetMacs=True,
-           autoStaticArp=True, controller = OVSController)
+           autoStaticArp=True)
     net.start()
     CLI( net )
     net.stop()
