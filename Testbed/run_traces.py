@@ -19,10 +19,10 @@ def main():
 	process_id = sys.argv[3]
 	ip = sys.argv[4]
 
-	print trace_path
-	print abr_algo
-	print process_id
-	print ip
+	# print trace_path
+	# print abr_algo
+	# print process_id
+	# print ip
 
 
 	sleep_vec = range(1, 10)  # random sleep second
@@ -35,6 +35,12 @@ def main():
 			np.random.shuffle(sleep_vec)
 			sleep_time = sleep_vec[int(process_id)]
 			
+			command = 'mm-delay ' + str(MM_DELAY) + 
+					  ' mm-link 12mbps ' + trace_path + f + ' ' +
+					  '/usr/bin/python ' + RUN_SCRIPT + ' ' + ip + ' ' +
+					  abr_algo + ' ' + str(RUN_TIME) + ' ' +
+					  process_id + ' ' + f + ' ' + str(sleep_time)
+			print command
 			proc = subprocess.Popen('mm-delay ' + str(MM_DELAY) + 
 					  ' mm-link 12mbps ' + trace_path + f + ' ' +
 					  '/usr/bin/python ' + RUN_SCRIPT + ' ' + ip + ' ' +
@@ -54,5 +60,4 @@ def main():
 					log.flush()
 
 if __name__ == '__main__':
-	print "running taces"
 	main()

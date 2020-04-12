@@ -39,6 +39,7 @@ sleep(int(sleep_time))
 	
 # generate url
 url = 'http://' + ip + '/' + 'myindex_' + abr_algo + '.html'
+print url
 
 # timeout signal
 signal.signal(signal.SIGALRM, timeout_handler)
