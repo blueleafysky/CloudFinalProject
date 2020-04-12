@@ -37,7 +37,7 @@ def execute(command_rl):
     process_rl = subprocess.Popen(command_rl, stdout=subprocess.PIPE, shell=True, universal_newlines=True)
     for stdout_line in iter(process_rl.stdout.readline, ""):
       yield stdout_line
-    process_rl.stdout.close()
+    # process_rl.stdout.close()
     # while True:
     #     output = process_rl.stdout.readline()
     #     if output == '' and process.poll() is not None:
