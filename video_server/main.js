@@ -2,10 +2,10 @@ var player1;
 var player2;
 var controlbar1;
 var controlbar2;
-const url = 'http://localhost/Manifest.mpd'; //for local server start
+// const url = 'http://localhost/Manifest.mpd'; //for local server start
 const apiPort = 5000
 const restAPI = `http://localhost:${apiPort}/`
-// const url = 'http://10.0.0.2:8000/Manifest.mpd'; // for mininet
+const url = 'http://10.0.0.2:8000/Manifest.mpd'; // for mininet
 
 function startVideo() {
     var video1 = document.querySelector(".videoContainer video");
