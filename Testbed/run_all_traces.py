@@ -33,10 +33,19 @@ print command_rl
 
 # uncomment lines after Processes comment  if not testing for stdout, only call def execute to bubble output of subprocess
 def execute(command_rl):
+	print "running command_RL"
 	process_rl = subprocess.Popen(command_rl, stdout=subprocess.PIPE, shell=True)
-	for stdout_line in iter(popen.stdout.readline, ""):
-		yield stdout_line
-	process_rl.stdout.close()
+	# for stdout_line in iter(popen.stdout.readline, ""):
+	# 	yield stdout_line
+	# process_rl.stdout.close()
+	while True:
+        process_rl = process.stdout.readline()
+        if output == '' and process.poll() is not None:
+            break
+        if output:
+            print output.strip()
+
+
 	time.sleep(0.1)
 
 	process_rl.wait()
