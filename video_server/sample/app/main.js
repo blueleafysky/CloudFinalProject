@@ -1,5 +1,3 @@
-'use strict';
-
 var app = angular.module('DashPlayer', ['DashSourcesService', 'DashContributorsService', 'DashIFTestVectorsService', 'angular-flot']); /* jshint ignore:line */
 
 $(document).ready(function () {
@@ -35,7 +33,8 @@ angular.module('DashIFTestVectorsService', ['ngResource']).factory('dashifTestVe
 
 app.controller('DashController', function ($scope, sources, contributors, dashifTestVectors) {
     $scope.selectedItem = {
-        url: 'https://dash.akamaized.net/akamai/bbb_30fps/bbb_30fps.mpd'
+        // url: 'https://dash.akamaized.net/akamai/bbb_30fps/bbb_30fps.mpd'
+        url:'http://localhost/Manifest.mpd'
     };
 
     sources.query(function (data) {
@@ -437,9 +436,11 @@ app.controller('DashController', function ($scope, sources, contributors, dashif
         if ($scope.customABRRulesSelected) {
             $scope.player.addABRCustomRule('qualitySwitchRules', 'DownloadRatioRule', DownloadRatioRule); /* jshint ignore:line */
             $scope.player.addABRCustomRule('qualitySwitchRules', 'ThroughputRule', CustomThroughputRule); /* jshint ignore:line */
+            // $scope.player.addABRCustomRule('qualitySwitchRules', 'LowestBitrateRule', LowestBitrateRule); /* jshint ignore:line */
         } else {
             $scope.player.removeABRCustomRule('DownloadRatioRule');
             $scope.player.removeABRCustomRule('ThroughputRule');
+            // $scope.player.removeABRCustomRule('LowestBitrateRule');
         }
     };
 
