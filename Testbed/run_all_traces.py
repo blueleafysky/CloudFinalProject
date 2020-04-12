@@ -39,7 +39,7 @@ def execute(command_rl):
     #   yield stdout_line
     # process_rl.stdout.close()
     while True:
-        process_rl = process.stdout.readline()
+        output = process_rl.stdout.readline()
         if output == '' and process.poll() is not None:
             break
         if output:
