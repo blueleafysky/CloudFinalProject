@@ -53,5 +53,5 @@ def main():
 					log.flush()
 
 if __name__ == '__main__':
-	print("running taces")
+	print "running taces"
 	main()
