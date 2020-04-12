@@ -1,13 +1,11 @@
-import { url } from './config.js';
-
 var player1;
 var player2;
 var controlbar1;
 var controlbar2;
-// const url = 'http://localhost/Manifest.mpd'; for local server start
+const url = 'http://localhost/Manifest.mpd'; //for local server start
 // const url = 'http://10.0.0.2:8000/Manifest.mpd'; // for mininet
 
-export function startVideo() {
+function startVideo() {
     var video1 = document.querySelector(".videoContainer video");
     var video2 = document.querySelector(".videoContainer_2 video");
 
@@ -78,7 +76,7 @@ export function startVideo() {
         }, bitrateInterval2 * 1000);
     } 
 }
-export function configurePlayback(inp) {
+function configurePlayback(inp) {
     var controlbar;
     var player;
     var stableBuffer;
