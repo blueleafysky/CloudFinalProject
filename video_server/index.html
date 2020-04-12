@@ -209,7 +209,6 @@
     <body>
         <div>
             <div class="dash-video-player " style = "float: left;">
-                <!-- HTML structure needed for the ControlBar -->
                 <div class="videoContainer" id="videoContainer" >
                     <video class="dashjs-player1" preload="auto" autoplay="true"> </video>
                     <div id="videoController" class="video-controller unselectable">
@@ -249,7 +248,7 @@
                 <strong>Buffered:</strong>
                 <span id="bufferLevel1"></span>
                 <br />
-                <strong>Reported bitrate:</strong>
+                <strong>Expected bitrate:</strong>
                 <span id="reportedBitrate1"></span>
                 <br />
                 <strong>Calculated bitrate:</strong>
@@ -263,10 +262,10 @@
                         Buffer length at top quality (seconds): <input type="number" id="topQualityBuffer1" value="20">
                     </div>
                     <div>
-                        Max selectable bitrate (Kbps): <input type="number" id="maxBitrate1" value="5000"> 
+                        Max bitrate (Kbps): <input type="number" id="maxBitrate1" value="10000"> 
                     </div>
                     <div>
-                        Min selectable bitrate (Kbps): <input type="number" id="minBitrate1" value="-1">
+                        Min bitrate (Kbps): <input type="number" id="minBitrate1" value="0">
                     </div>
                     <div>
                         Select ABR algorithm: 
@@ -281,14 +280,13 @@
                         Change ABR?: <input type="checkbox" id="changeabr1">
                     </div>
                     <div>
-                        <button onclick="configurePlayback(1)">Apply changes</button>
+                        <button onclick="configurePlayback(1)">Update</button>
                     </div>
                 </fieldset>
             </div>
         </div>
         <div>
             <div class="dash-video-player " style = "float: left;">
-                <!-- HTML structure needed for the ControlBar -->
                 <div class="videoContainer_2" id="videoContainer_2">
                     <video class="dashjs-player2" preload="auto" autoplay="true"> </video>
                     <div id="videoController_2" class="video-controller unselectable">
@@ -328,7 +326,7 @@
                 <strong>Buffered:</strong>
                 <span id="bufferLevel2"></span>
                 <br />
-                <strong>Reported bitrate:</strong>
+                <strong>Expected bitrate:</strong>
                 <span id="reportedBitrate2"></span>
                 <br />
                 <strong>Calculated bitrate:</strong>
@@ -342,10 +340,10 @@
                         Buffer length at top quality (seconds): <input type="number" id="topQualityBuffer2" value="20">
                     </div>
                     <div>
-                        Max selectable bitrate (Kbps): <input type="number" id="maxBitrate2" value="5000"> 
+                        Max bitrate (Kbps): <input type="number" id="maxBitrate2" value="10000"> 
                     </div>
                     <div>
-                        Min selectable bitrate (Kbps): <input type="number" id="minBitrate2" value="-1">
+                        Min bitrate (Kbps): <input type="number" id="minBitrate2" value="0">
                     </div>
                     <div>
                         Select ABR algorithm: 
@@ -360,7 +358,7 @@
                         Change ABR?: <input type="checkbox" id="changeabr2">
                     </div>
                     <div>
-                        <button onclick="configurePlayback(2)">Apply changes</button>
+                        <button onclick="configurePlayback(2)">Update</button>
                     </div>
                 </fieldset>
             </div>
