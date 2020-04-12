@@ -31,7 +31,10 @@ print command_rl
 def execute(command_rl):
 	process_rl = subprocess.Popen(command_rl, stdout=subprocess.PIPE, shell=True)
 	for stdout_line in iter(popen.stdout.readline, ""):
-        yield stdout_line 
+		yield stdout_line
+	process_rl.stdout.close()
+
+execulte(command_rl)
 
 time.sleep(0.1)
 
