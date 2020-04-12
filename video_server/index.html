@@ -3,6 +3,7 @@
     <head>
         <link rel="stylesheet" href="./contrib/akamai/controlbar/controlbar.css">
 
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
         <script src="./dist/dash.all.min.js"></script>
         <script src="./contrib/akamai/controlbar/ControlBar.js"></script>
         <script src="./rules/LowestBitrateRule.js"></script>
@@ -180,6 +181,11 @@
                         <button onclick="configurePlayback(2)">Update</button>
                     </div>
                 </fieldset>
+            </div>
+        </div>
+        <div>
+            <div>
+                <button onclick="callPyScript()">Call External Python Script</button>
             </div>
         </div>
     </body>

@@ -3,6 +3,8 @@ var player2;
 var controlbar1;
 var controlbar2;
 const url = 'http://localhost/Manifest.mpd'; //for local server start
+const apiPort = 5000
+const restAPI = `http://localhost:${apiPort}/`
 // const url = 'http://10.0.0.2:8000/Manifest.mpd'; // for mininet
 
 function startVideo() {
@@ -33,7 +35,7 @@ function startVideo() {
         var streamInfo1 = player1.getActiveStream().getStreamInfo();
         var dashMetrics1 = player1.getDashMetrics();
         var dashAdapter1 = player1.getDashAdapter();
-        
+
         if (dashMetrics1 && streamInfo1) {
             const periodIdx = streamInfo1.index;
             var repSwitch = dashMetrics1.getCurrentRepresentationSwitch('video', true);
@@ -184,4 +186,17 @@ function configurePlayback(inp) {
         player.attachSource(url);
         controlbar.reset();
     }
+}
+
+function callPyScript(){
+    var input = {'a': 'b'}
+    var jqXHR = $.ajax({
+        type: "POST",
+        url: restAPI + "testABR",
+        async: false,
+        data: { mydata: input }
+    });
+
+    console.log(jqXHR.responseText)
+    
 }
