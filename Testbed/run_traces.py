@@ -46,7 +46,7 @@ def main():
                       stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
             print "out of subprocess"
             (out, err) = proc.communicate()
-
+            print "escape proc.communicate call"
             if out == 'done\n':
                 break
             else:
@@ -55,6 +55,7 @@ def main():
                     log.write(abr_algo + '_' + f + '\n')
                     log.write(out + '\n')
                     log.flush()
+            print "out of done/retry log check"
 
 if __name__ == '__main__':
     main()
