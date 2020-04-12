@@ -2,3 +2,5 @@
 .idea/*
 venv/
 chrome_retry_log
+*.pyc
+
