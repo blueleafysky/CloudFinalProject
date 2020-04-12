@@ -18,7 +18,8 @@
             var player2;
             var controlbar1;
             var controlbar2;
-            const url = 'http://localhost/Manifest.mpd';
+            // const url = 'http://localhost/Manifest.mpd'; for local server start
+            const url = 'http://10.0.0.2:8000/Manifest.mpd'; // for mininet
             function startVideo() {
                 var video1 = document.querySelector(".videoContainer video");
                 var video2 = document.querySelector(".videoContainer_2 video");
