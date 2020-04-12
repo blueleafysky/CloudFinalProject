@@ -190,13 +190,13 @@ function configurePlayback(inp) {
 
 function callPyScript(){
     var input = {'a': 'b'}
-    var jqXHR = $.ajax({
+    var getPy = $.ajax({
         type: "POST",
         url: restAPI + "testABR",
         async: false,
         data: { mydata: input }
     });
 
-    console.log(jqXHR.responseText)
+    console.log(getPy.responseText)
     
 }
