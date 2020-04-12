@@ -50,3 +50,4 @@ def execute(command_rl):
 
     process_rl.wait()
 execute(command_rl)
+print "command executed"
