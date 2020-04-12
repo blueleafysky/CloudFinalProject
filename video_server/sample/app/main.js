@@ -436,9 +436,11 @@ app.controller('DashController', function ($scope, sources, contributors, dashif
         if ($scope.customABRRulesSelected) {
             $scope.player.addABRCustomRule('qualitySwitchRules', 'DownloadRatioRule', DownloadRatioRule); /* jshint ignore:line */
             $scope.player.addABRCustomRule('qualitySwitchRules', 'ThroughputRule', CustomThroughputRule); /* jshint ignore:line */
+            // $scope.player.addABRCustomRule('qualitySwitchRules', 'LowestBitrateRule', LowestBitrateRule); /* jshint ignore:line */
         } else {
             $scope.player.removeABRCustomRule('DownloadRatioRule');
             $scope.player.removeABRCustomRule('ThroughputRule');
+            // $scope.player.removeABRCustomRule('LowestBitrateRule');
         }
     };
 

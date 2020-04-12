@@ -8,6 +8,9 @@
         <script src="../contrib/akamai/controlbar/ControlBar.js"></script>
         <script class="code" src="../contrib/akamai/controlbar/ControlBar.js"></script>
         <script class="code" src="../dist/dash.all.debug.js"></script>
+        <script src="./rules/LowestBitrateRule.js"></script>
+        <script src="./rules/DownloadRatioRule.js"></script>
+        <script src="./rules/ThroughputRule.js"></script>
         <script>
             document.addEventListener("DOMContentLoaded", function () {
                 startVideo();
@@ -16,9 +19,10 @@
         <script>
             var player1;
             var player2;
-
+            var controlbar1;
+            var controlbar2;
+            const url = 'https://dash.akamaized.net/akamai/bbb_30fps/bbb_30fps.mpd';
             function startVideo() {
-                const url = 'https://dash.akamaized.net/akamai/bbb_30fps/bbb_30fps.mpd';
                 var video1 = document.querySelector(".videoContainer video");
                 var video2 = document.querySelector(".videoContainer_2 video");
 
@@ -28,10 +32,32 @@
                 player1.initialize(video1, url, true);
                 player2.initialize(video2, url, true);
 
-                var controlbar = new ControlBar(player1);
-                controlbar.initialize();
 
-                var controlbar2 = new ControlBar(player2);
+                // player1.updateSettings({
+                //     'streaming': {
+                //         'abr': {
+                //             'useDefaultABRRules': false
+                //         }
+                //     }
+                // });
+
+                // player2.updateSettings({
+                //     'streaming': {
+                //         'abr': {
+                //             'useDefaultABRRules': false
+                //         }
+                //     }
+                // });
+
+                // // // add my custom quality switch rule. Look at LowestBitrateRule.js to know more
+                // // // about the structure of a custom rule
+                // player1.addABRCustomRule('qualitySwitchRules', 'LowestBitrateRule', LowestBitrateRule);
+                // player2.addABRCustomRule('qualitySwitchRules', 'LowestBitrateRule', LowestBitrateRule);
+
+                controlbar1 = new ControlBar(player1);
+                controlbar1.initialize();
+
+                controlbar2 = new ControlBar(player2);
                 controlbar2.initialize('_2');
 
                 player1.on(dashjs.MediaPlayer.events["PLAYBACK_ENDED"], function() {
@@ -80,14 +106,117 @@
                 }
 
                 if (video2.webkitVideoDecodedByteCount !== undefined) {
-                    var lastDecodedByteCount = 0;
-                    const bitrateInterval = 5;
-                    var bitrateCalculator = setInterval(function() {
-                        var calculatedBitrate = (((video2.webkitVideoDecodedByteCount - lastDecodedByteCount) / 1000) * 8) / bitrateInterval;
-                        document.getElementById('calculatedBitrate2').innerText = Math.round(calculatedBitrate) + " Kbps";
-                        lastDecodedByteCount = video2.webkitVideoDecodedByteCount;
-                    }, bitrateInterval * 1000);
+                    var lastDecodedByteCount2 = 0;
+                    const bitrateInterval2 = 5;
+                    var bitrateCalculator2 = setInterval(function() {
+                        var calculatedBitrate2 = (((video2.webkitVideoDecodedByteCount - lastDecodedByteCount2) / 1000) * 8) / bitrateInterval2;
+                        document.getElementById('calculatedBitrate2').innerText = Math.round(calculatedBitrate2) + " Kbps";
+                        lastDecodedByteCount2 = video2.webkitVideoDecodedByteCount;
+                    }, bitrateInterval2 * 1000);
                 } 
+            }
+            function configurePlayback(inp) {
+                var controlbar;
+                var player;
+                var stableBuffer;
+                var bufferAtTopQuality;
+                var minBitrate;
+                var maxBitrate;
+                var abr;
+                var changeAbr;
+                if(inp == 1){
+                    player = player1
+                    controlbar = controlbar1
+                    stableBuffer = parseInt(document.getElementById('stableBuffer1').value, 10);
+                    bufferAtTopQuality = parseInt(document.getElementById('topQualityBuffer1').value, 10);
+                    minBitrate = parseInt(document.getElementById('minBitrate1').value, 10);
+                    maxBitrate = parseInt(document.getElementById('maxBitrate1').value, 10);
+                    abr = document.getElementById('abr1').value;
+                    changeAbr = document.getElementById('changeabr1').checked;
+                }
+                if(inp == 2){
+                    player = player2
+                    controlbar = controlbar2
+                    stableBuffer = parseInt(document.getElementById('stableBuffer2').value, 10);
+                    bufferAtTopQuality = parseInt(document.getElementById('topQualityBuffer2').value, 10);
+                    minBitrate = parseInt(document.getElementById('minBitrate2').value, 10);
+                    maxBitrate = parseInt(document.getElementById('maxBitrate2').value, 10);
+                    abr = document.getElementById('abr2').value;
+                    changeAbr = document.getElementById('changeabr2').checked;
+
+                }
+
+
+                player.updateSettings({
+                    'streaming': {
+                        'stableBufferTime': stableBuffer,
+                        'bufferTimeAtTopQualityLongForm': bufferAtTopQuality,
+                        'abr': {
+                            'minBitrate': {
+                                'video': minBitrate
+                            },
+                            'maxBitrate': {
+                                'video': maxBitrate
+                            }
+                        }
+                    }
+                })
+                if(changeAbr){
+                    switch(abr){
+                        case 'LowestBitrateRule':
+                            player.removeABRCustomRule('ThroughputRule');
+                            player.removeABRCustomRule('DownloadRatioRule');
+                            player.addABRCustomRule('qualitySwitchRules', 'LowestBitrateRule', LowestBitrateRule);
+                            player.updateSettings({
+                                'streaming': {
+                                    'abr': {
+                                        'useDefaultABRRules': false,
+                                        'ABRStrategy': 'LowestBitrateRule'
+                                    }
+                                }
+                            });
+                            break;
+                        case 'DownloadRatioRule':
+                            player.removeABRCustomRule('LowestBitrateRule');
+                            player.removeABRCustomRule('ThroughputRule');
+                            player.addABRCustomRule('qualitySwitchRules', 'DownloadRatioRule', DownloadRatioRule);
+                            player.updateSettings({
+                                'streaming': {
+                                    'abr': {
+                                        'useDefaultABRRules': false,
+                                        'ABRStrategy': 'DownloadRatioRule'
+                                    }
+                                }
+                            });
+                            break;
+                        case 'ThroughputRule':
+                            player.removeABRCustomRule('LowestBitrateRule');
+                            player.removeABRCustomRule('DownloadRatioRule');
+                            player.addABRCustomRule('qualitySwitchRules', 'ThroughputRule', CustomThroughputRule);
+                            player.updateSettings({
+                                'streaming': {
+                                    'abr': {
+                                        'useDefaultABRRules': false,
+                                        'ABRStrategy': 'ThroughputRule'
+                                    }
+                                }
+                            });
+                            break;
+                        default:
+                            player.removeABRCustomRule('LowestBitrateRule');
+                            player.removeABRCustomRule('ThroughputRule');
+                            player.removeABRCustomRule('DownloadRatioRule');
+                            player.updateSettings({
+                                'streaming': {
+                                    'abr': {
+                                        'useDefaultABRRules': true,
+                                    }
+                                }
+                            });
+                    }
+                    player.attachSource(url);
+                    controlbar.reset();
+                }
             }
         </script>
         <style>
@@ -138,16 +267,47 @@
                     </div>
                 </div>
             </div>
-            <div style="margin-bottom: 350px;">
-                <h1><b>Statistics Player 1<b></h1>
-                    <strong>Reported bitrate:</strong>
-                    <span id="reportedBitrate1"></span>
-                    <br />
-                    <strong>Buffer level:</strong>
-                    <span id="bufferLevel1"></span>
-                    <br />
-                    <strong>Calculated bitrate:</strong>
-                    <span id="calculatedBitrate1"></span>
+            <div style="margin-bottom: 200px">
+                <Strong>Player 1 Statistics</strong>
+                <br />
+                <strong>Reported bitrate:</strong>
+                <span id="reportedBitrate1"></span>
+                <br />
+                <strong>Buffer level:</strong>
+                <span id="bufferLevel1"></span>
+                <br />
+                <strong>Calculated bitrate:</strong>
+                <span id="calculatedBitrate1"></span>
+                <fieldset>
+                    <legend>Configuration parameters</legend>
+                    <div>
+                        Max stable buffer (seconds): <input type="number" id="stableBuffer1" value="20">
+                    </div>
+                    <div>
+                        Buffer length at top quality (seconds): <input type="number" id="topQualityBuffer1" value="20">
+                    </div>
+                    <div>
+                        Max selectable bitrate (Kbps): <input type="number" id="maxBitrate1" value="5000"> 
+                    </div>
+                    <div>
+                        Min selectable bitrate (Kbps): <input type="number" id="minBitrate1" value="-1">
+                    </div>
+                    <div>
+                        Select ABR algorithm: 
+                        <select type="dropdown" id="abr1">
+                            <option value="default">Default</option>
+                            <option value="LowestBitrateRule">Lowest Bitrate</option>
+                            <option value="DownloadRatioRule">Download Ratio Rule</option>
+                            <option value="ThroughputRule">Throughput Rule</option>
+                         </select>
+                    </div>
+                    <div>
+                        Change ABR?: <input type="checkbox" id="changeabr1">
+                    </div>
+                    <div>
+                        <button onclick="configurePlayback(1)">Apply changes</button>
+                    </div>
+                </fieldset>
             </div>
         </div>
         <div>
@@ -186,16 +346,47 @@
                     </div>
                 </div>
             </div>
-            <div style="margin-bottom: 350px;">
-                <h1><b>Statistics Player 2<b></h1>
-                    <strong>Reported bitrate:</strong>
-                    <span id="reportedBitrate2"></span>
-                    <br />
-                    <strong>Buffer level:</strong>
-                    <span id="bufferLevel2"></span>
-                    <br />
-                    <strong>Calculated bitrate:</strong>
-                    <span id="calculatedBitrate2"></span>
+            <div style="margin-bottom: 200px">
+                <strong>Player 2 Statistics</strong>
+                </br>
+                <strong>Reported bitrate:</strong>
+                <span id="reportedBitrate2"></span>
+                <br />
+                <strong>Buffer level:</strong>
+                <span id="bufferLevel2"></span>
+                <br />
+                <strong>Calculated bitrate:</strong>
+                <span id="calculatedBitrate2"></span>
+                <fieldset>
+                    <legend>Configuration parameters</legend>
+                    <div>
+                        Max stable buffer (seconds): <input type="number" id="stableBuffer2" value="20">
+                    </div>
+                    <div>
+                        Buffer length at top quality (seconds): <input type="number" id="topQualityBuffer2" value="20">
+                    </div>
+                    <div>
+                        Max selectable bitrate (Kbps): <input type="number" id="maxBitrate2" value="5000"> 
+                    </div>
+                    <div>
+                        Min selectable bitrate (Kbps): <input type="number" id="minBitrate2" value="-1">
+                    </div>
+                    <div>
+                        Select ABR algorithm: 
+                        <select type="dropdown" id="abr2">
+                            <option value="default">Default</option>
+                            <option value="LowestBitrateRule">Lowest Bitrate</option>
+                            <option value="DownloadRatioRule">Download Ratio Rule</option>
+                            <option value="ThroughputRule">Throughput Rule</option>
+                         </select>
+                    </div>
+                    <div>
+                        Change ABR?: <input type="checkbox" id="changeabr2">
+                    </div>
+                    <div>
+                        <button onclick="configurePlayback(2)">Apply changes</button>
+                    </div>
+                </fieldset>
             </div>
         </div>
     </body>
