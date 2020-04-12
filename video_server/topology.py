@@ -14,7 +14,7 @@ class NetworkTopology(Topo):
         h2 = self.addHost('h2')
         h3 = self.addHost('h3')
         s1 = self.addSwitch('s1')
-        self.addLink(h1, s1, bw=20, delay='40ms')
+        self.addLink(h1, s1, bw=5, delay='10ms')
         self.addLink(h2, s1)
         self.addLink(h3, s1)
         
