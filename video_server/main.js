@@ -26,18 +26,14 @@ function startVideo() {
         clearInterval(bitrateCalculator);
     });
     player2.on(dashjs.MediaPlayer.events["PLAYBACK_ENDED"], function() {
-        clearInterval(eventPoller);
-        clearInterval(bitrateCalculator);
+        clearInterval(eventPoller2);
+        clearInterval(bitrateCalculator2);
     });
     var eventPoller = setInterval(function() {
         var streamInfo1 = player1.getActiveStream().getStreamInfo();
         var dashMetrics1 = player1.getDashMetrics();
         var dashAdapter1 = player1.getDashAdapter();
-
-        var streamInfo2 = player2.getActiveStream().getStreamInfo();
-        var dashMetrics2 = player2.getDashMetrics();
-        var dashAdapter2 = player2.getDashAdapter();
-
+        
         if (dashMetrics1 && streamInfo1) {
             const periodIdx = streamInfo1.index;
             var repSwitch = dashMetrics1.getCurrentRepresentationSwitch('video', true);
@@ -46,6 +42,14 @@ function startVideo() {
             document.getElementById('bufferLevel1').innerText = bufferLevel + " secs";
             document.getElementById('reportedBitrate1').innerText = bitrate + " Kbps";
         }
+    }, 1000);
+
+
+    var eventPoller2 = setInterval(function() {
+
+        var streamInfo2 = player2.getActiveStream().getStreamInfo();
+        var dashMetrics2 = player2.getDashMetrics();
+        var dashAdapter2 = player2.getDashAdapter();
 
         if (dashMetrics2 && streamInfo2) {
             const periodIdx = streamInfo2.index;
@@ -56,6 +60,7 @@ function startVideo() {
             document.getElementById('reportedBitrate2').innerText = bitrate + " Kbps";
         }
     }, 1000);
+
     if (video1.webkitVideoDecodedByteCount !== undefined) {
         var lastDecodedByteCount = 0;
         const bitrateInterval = 5;
@@ -76,6 +81,7 @@ function startVideo() {
         }, bitrateInterval2 * 1000);
     } 
 }
+
 function configurePlayback(inp) {
     var controlbar;
     var player;
