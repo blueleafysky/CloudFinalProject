@@ -6,6 +6,7 @@ var controlbar2;
 const apiPort = 5000
 const restAPI = `http://localhost:${apiPort}/`
 const url = 'http://10.0.0.2:8000/Manifest.mpd'; // for mininet
+// const url = 'https://dash.akamaized.net/akamai/bbb_30fps/bbb_30fps.mpd' //test cdn buffer changes only visible for larger videos 
 
 function startVideo() {
     var video1 = document.querySelector(".videoContainer video");
@@ -24,63 +25,58 @@ function startVideo() {
     controlbar2.initialize('_2');
 
     player1.on(dashjs.MediaPlayer.events["PLAYBACK_ENDED"], function() {
-        clearInterval(eventPoller);
-        clearInterval(bitrateCalculator);
+        clearInterval(pollStats1);
+        clearInterval(estimateBitrate1);
     });
     player2.on(dashjs.MediaPlayer.events["PLAYBACK_ENDED"], function() {
-        clearInterval(eventPoller2);
-        clearInterval(bitrateCalculator2);
+        clearInterval(pollStats2);
+        clearInterval(estimateBitrate2);
     });
-    var eventPoller = setInterval(function() {
+    var pollStats1 = setInterval(function() {
         var streamInfo1 = player1.getActiveStream().getStreamInfo();
         var dashMetrics1 = player1.getDashMetrics();
         var dashAdapter1 = player1.getDashAdapter();
-
-        if (dashMetrics1 && streamInfo1) {
-            const periodIdx = streamInfo1.index;
-            var repSwitch = dashMetrics1.getCurrentRepresentationSwitch('video', true);
-            var bufferLevel = dashMetrics1.getCurrentBufferLevel('video', true);
-            var bitrate = repSwitch ? Math.round(dashAdapter1.getBandwidthForRepresentation(repSwitch.to, periodIdx) / 1000) : NaN;
-            document.getElementById('bufferLevel1').innerText = bufferLevel + " secs";
-            document.getElementById('reportedBitrate1').innerText = bitrate + " Kbps";
-        }
+        const periodId1 = streamInfo1.index;
+        var repId1 = dashMetrics1.getCurrentRepresentationSwitch('video', true).to;
+        var bitrate1 = Math.round(dashAdapter1.getBandwidthForRepresentation(repId1, periodId1) / 1000)
+        var bufferLevel1 = dashMetrics1.getCurrentBufferLevel('video', true);
+        console.log(player1.getAverageThroughput("video"));
+        document.getElementById('reportedBitrate1').innerText = bitrate1 + " Kbps";
+        document.getElementById('bufferLevel1').innerText = bufferLevel1 + " sec";
     }, 1000);
 
 
-    var eventPoller2 = setInterval(function() {
-
+    var pollStats2 = setInterval(function() {
         var streamInfo2 = player2.getActiveStream().getStreamInfo();
         var dashMetrics2 = player2.getDashMetrics();
         var dashAdapter2 = player2.getDashAdapter();
-
-        if (dashMetrics2 && streamInfo2) {
-            const periodIdx = streamInfo2.index;
-            var repSwitch = dashMetrics2.getCurrentRepresentationSwitch('video', true);
-            var bufferLevel = dashMetrics2.getCurrentBufferLevel('video', true);
-            var bitrate = repSwitch ? Math.round(dashAdapter2.getBandwidthForRepresentation(repSwitch.to, periodIdx) / 1000) : NaN;
-            document.getElementById('bufferLevel2').innerText = bufferLevel + " secs";
-            document.getElementById('reportedBitrate2').innerText = bitrate + " Kbps";
-        }
+        const periodId2 = streamInfo2.index;
+        var repId2 = dashMetrics2.getCurrentRepresentationSwitch('video', true).to;
+        var bitrate2 = Math.round(dashAdapter2.getBandwidthForRepresentation(repId2, periodId2) / 1000)
+        var bufferLevel2 = dashMetrics2.getCurrentBufferLevel('video', true);
+        console.log(player2.getAverageThroughput('video'));
+        document.getElementById('reportedBitrate2').innerText = bitrate2 + " Kbps";
+        document.getElementById('bufferLevel2').innerText = bufferLevel2 + " sec";
     }, 1000);
 
-    if (video1.webkitVideoDecodedByteCount !== undefined) {
-        var lastDecodedByteCount = 0;
-        const bitrateInterval = 5;
-        var bitrateCalculator = setInterval(function() {
-            var calculatedBitrate = (((video1.webkitVideoDecodedByteCount - lastDecodedByteCount) / 1000) * 8) / bitrateInterval;
+    if (video1.webkitVideoDecodedByteCount != undefined) {
+        var numBytesPrev = 0;
+        const timeElapsed = 5; 
+        var estimateBitrate1 = setInterval(function() {
+            var calculatedBitrate = (((video1.webkitVideoDecodedByteCount - numBytesPrev) / 1000) * 8) / timeElapsed;
             document.getElementById('calculatedBitrate1').innerText = Math.round(calculatedBitrate) + " Kbps";
-            lastDecodedByteCount = video1.webkitVideoDecodedByteCount;
-        }, bitrateInterval * 1000);
+            numBytesPrev = video1.webkitVideoDecodedByteCount;
+        }, timeElapsed * 1000);
     }
 
-    if (video2.webkitVideoDecodedByteCount !== undefined) {
-        var lastDecodedByteCount2 = 0;
-        const bitrateInterval2 = 5;
-        var bitrateCalculator2 = setInterval(function() {
-            var calculatedBitrate2 = (((video2.webkitVideoDecodedByteCount - lastDecodedByteCount2) / 1000) * 8) / bitrateInterval2;
+    if (video2.webkitVideoDecodedByteCount != undefined) {
+        var numBytesPrev2 = 0;
+        const timeElapsed2 = 5;
+        var estimateBitrate2 = setInterval(function() {
+            var calculatedBitrate2 = (((video2.webkitVideoDecodedByteCount - numBytesPrev2) / 1000) * 8) / timeElapsed2;
             document.getElementById('calculatedBitrate2').innerText = Math.round(calculatedBitrate2) + " Kbps";
-            lastDecodedByteCount2 = video2.webkitVideoDecodedByteCount;
-        }, bitrateInterval2 * 1000);
+            numBytesPrev2 = video2.webkitVideoDecodedByteCount;
+        }, timeElapsed2 * 1000);
     } 
 }
 
@@ -115,8 +111,8 @@ function configurePlayback(inp) {
 
     }
 
-
-    player.updateSettings({
+    console.log(bufferAtTopQuality)
+    player1.updateSettings({
         'streaming': {
             'stableBufferTime': stableBuffer,
             'bufferTimeAtTopQualityLongForm': bufferAtTopQuality,
