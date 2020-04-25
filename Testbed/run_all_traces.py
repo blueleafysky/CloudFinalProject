@@ -14,9 +14,9 @@ with open('./chrome_retry_log', 'wb') as f:
 os.system('sudo sysctl -w net.ipv4.ip_forward=1')
 
 # if this line cannont run, this likely is down. It is just to determine the IP of the request machine/VM. If known IP, can hardcode it here.
-ip = "35.221.39.208"
-# ip_data = json.loads(urllib.urlopen("http://ip.jsontest.com/").read())
-# ip = str(ip_data['ip'])
+ip = "34.83.132.41"
+#ip_data = json.loads(urllib.urlopen("http://ip.jsontest.com/").read())
+#ip = str(ip_data['ip'])
 
 
 print ip
