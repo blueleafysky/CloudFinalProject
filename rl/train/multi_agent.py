@@ -28,7 +28,7 @@ BUFFER_NORM_FACTOR = 10.0
 CHUNK_TIL_VIDEO_END_CAP = 48.0
 M_IN_K = 1000.0
 REBUF_PENALTY = 4.3  # 1 sec rebuffering -> 3 Mbps
-SMOOTH_PENALTY = 1
+SMOOTH_PENALTY = 2.0
 DEFAULT_QUALITY = 1  # default video quality without agent
 RANDOM_SEED = 42
 RAND_RANGE = 1000
@@ -196,11 +196,11 @@ def central_agent(net_params_queues, exp_queues):
 
             if epoch % MODEL_SAVE_INTERVAL == 0:
                 # Save the neural net parameters to disk.
-                save_path = saver.save(sess, SUMMARY_DIR + "/nn_model_ep_" +
+                save_path = saver.save(sess, SUMMARY_DIR + "/log_reward_nn_model_ep_" +
                                        str(epoch) + ".ckpt")
                 logging.info("Model saved in file: " + save_path)
                 testing(epoch, 
-                    SUMMARY_DIR + "/nn_model_ep_" + str(epoch) + ".ckpt", 
+                    SUMMARY_DIR + "/log_reward_nn_model_ep_" + str(epoch) + ".ckpt", 
                     test_log_file)
 
 
@@ -247,20 +247,19 @@ def agent(agent_id, all_cooked_time, all_cooked_bw, net_params_queue, exp_queue)
             time_stamp += delay  # in ms
             time_stamp += sleep_time  # in ms
 
-            # -- linear reward --
-            # reward is video quality - rebuffer penalty - smoothness
-            reward = VIDEO_BIT_RATE[bit_rate] / M_IN_K \
-                     - REBUF_PENALTY * rebuf \
-                     - SMOOTH_PENALTY * np.abs(VIDEO_BIT_RATE[bit_rate] -
-                                               VIDEO_BIT_RATE[last_bit_rate]) / M_IN_K
+            #changing around reward function to try and obtain better results
+            #reward = VIDEO_BIT_RATE[bit_rate] / M_IN_K \
+            #          - REBUF_PENALTY * rebuf \
+            #          - SMOOTH_PENALTY * np.abs(VIDEO_BIT_RATE[bit_rate] -
+            #                                    VIDEO_BIT_RATE[last_bit_rate]) / M_IN_K
 
             # -- log scale reward --
-            # log_bit_rate = np.log(VIDEO_BIT_RATE[bit_rate] / float(VIDEO_BIT_RATE[-1]))
-            # log_last_bit_rate = np.log(VIDEO_BIT_RATE[last_bit_rate] / float(VIDEO_BIT_RATE[-1]))
+            log_bit_rate = np.log(VIDEO_BIT_RATE[bit_rate] / float(VIDEO_BIT_RATE[-1]))
+            log_last_bit_rate = np.log(VIDEO_BIT_RATE[last_bit_rate] / float(VIDEO_BIT_RATE[-1]))
 
-            # reward = log_bit_rate \
-            #          - REBUF_PENALTY * rebuf \
-            #          - SMOOTH_PENALTY * np.abs(log_bit_rate - log_last_bit_rate)
+            reward = log_bit_rate \
+                  - REBUF_PENALTY * rebuf \
+                  - SMOOTH_PENALTY * np.abs(log_bit_rate - log_last_bit_rate)
 
             # -- HD reward --
             # reward = HD_REWARD[bit_rate] \

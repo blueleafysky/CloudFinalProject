@@ -1,4 +1,5 @@
 #! /usr/bin/env bash
 
-python get_video_sizes.py
+sudo ./rename_ownership.sh
+sudo python get_video_sizes.py
 python multi_agent.py
