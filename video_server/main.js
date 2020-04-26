@@ -2,10 +2,10 @@ var player1;
 var player2;
 var controlbar1;
 var controlbar2;
-// const url = 'http://localhost/Manifest.mpd'; //for local server start
+const url = 'http://localhost:8000/Manifest.mpd'; //for local server start
 const apiPort = 5000
 const restAPI = `http://localhost:${apiPort}/`
-const url = 'http://10.0.0.2:8000/Manifest.mpd'; // for mininet
+// const url = 'http://10.0.0.2:8000/Manifest.mpd'; // for mininet
 // const url = 'https://dash.akamaized.net/akamai/bbb_30fps/bbb_30fps.mpd' //test cdn buffer changes only visible for larger videos 
 
 // globals for the live plotting
@@ -143,8 +143,7 @@ function configurePlayback(inp) {
     if(changeAbr){
         switch(abr){
             case 'LowestBitrateRule':
-                player.removeABRCustomRule('ThroughputRule');
-                player.removeABRCustomRule('DownloadRatioRule');
+                player.removeAllABRCustomRule();
                 player.addABRCustomRule('qualitySwitchRules', 'LowestBitrateRule', LowestBitrateRule);
                 player.updateSettings({
                     'streaming': {
@@ -156,8 +155,7 @@ function configurePlayback(inp) {
                 });
                 break;
             case 'DownloadRatioRule':
-                player.removeABRCustomRule('LowestBitrateRule');
-                player.removeABRCustomRule('ThroughputRule');
+                player.removeAllABRCustomRule();
                 player.addABRCustomRule('qualitySwitchRules', 'DownloadRatioRule', DownloadRatioRule);
                 player.updateSettings({
                     'streaming': {
@@ -169,8 +167,7 @@ function configurePlayback(inp) {
                 });
                 break;
             case 'ThroughputRule':
-                player.removeABRCustomRule('LowestBitrateRule');
-                player.removeABRCustomRule('DownloadRatioRule');
+                player.removeAllABRCustomRule();
                 player.addABRCustomRule('qualitySwitchRules', 'ThroughputRule', CustomThroughputRule);
                 player.updateSettings({
                     'streaming': {
@@ -181,10 +178,20 @@ function configurePlayback(inp) {
                     }
                 });
                 break;
+            case 'RLRule':
+                player.removeAllABRCustomRule();
+                player.addABRCustomRule('qualitySwitchRules', 'RLRule', RLRule);
+                player.updateSettings({
+                    'streaming': {
+                        'abr': {
+                            'useDefaultABRRules': false,
+                            'ABRStrategy': 'RLRule'
+                        }
+                    }
+                });
+                break;
             default:
-                player.removeABRCustomRule('LowestBitrateRule');
-                player.removeABRCustomRule('ThroughputRule');
-                player.removeABRCustomRule('DownloadRatioRule');
+                player.removeAllABRCustomRule();
                 player.updateSettings({
                     'streaming': {
                         'abr': {
