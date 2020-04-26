@@ -150,10 +150,10 @@
                             y:[[getData()], [getData1()]]},[0,1]);
                         count++;
 
-                        if(cnt > 200) {
+                        if(count > 200) {
                             Plotly.relayout('chart',{
                                 xaxis: {
-                                    range:[cnt-200]
+                                    range:[count-200]
                                 }
                             })
                         }
@@ -277,17 +277,17 @@
                         name:'Buffer Size (s)'
                     }], layout);
 
-                    var count =0;
+                    var count1 =0;
 
                     setInterval(function(){
                         Plotly.extendTraces('chart2',{
                             y:[[getData3()], [getData4()]]},[0,1]);
-                        count++;
+                        count1++;
 
-                        if(cnt > 200) {
+                        if(count1 > 200) {
                             Plotly.relayout('chart2',{
                                 xaxis: {
-                                    range:[cnt-200]
+                                    range:[count1-200]
                                 }
                             })
                         }
