@@ -145,7 +145,7 @@
                         name:'Buffer Size (s)'
                     }], layout);
 
-                    var count =0;
+                    var count=0;
 
                     setInterval(function(){
                         Plotly.extendTraces('chart',{
@@ -155,7 +155,7 @@
                         if(count > 200) {
                             Plotly.relayout('chart',{
                                 xaxis: {
-                                    range:[count-200]
+                                    range:[count-200,count]
                                 }
                             })
                         }
@@ -288,8 +288,8 @@
 
                         if(count1 > 200) {
                             Plotly.relayout('chart2',{
-                                xaxis: {
-                                    range:[count1-200]
+                                xaxis2: {
+                                    range:[count1-200,count1]
                                 }
                             })
                         }
