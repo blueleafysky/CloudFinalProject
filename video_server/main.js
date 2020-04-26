@@ -8,6 +8,12 @@ const restAPI = `http://localhost:${apiPort}/`
 const url = 'http://10.0.0.2:8000/Manifest.mpd'; // for mininet
 // const url = 'https://dash.akamaized.net/akamai/bbb_30fps/bbb_30fps.mpd' //test cdn buffer changes only visible for larger videos 
 
+// globals for the live plotting
+var p1bitrate;
+var p1buffersize;
+var p2bitrate;
+var p2buffersize;
+
 function startVideo() {
     var video1 = document.querySelector(".videoContainer video");
     var video2 = document.querySelector(".videoContainer_2 video");
@@ -43,6 +49,9 @@ function startVideo() {
         console.log(player1.getAverageThroughput("video"));
         document.getElementById('reportedBitrate1').innerText = bitrate1 + " Kbps";
         document.getElementById('bufferLevel1').innerText = bufferLevel1 + " sec";
+        // for live plotting
+        p1bitrate = bitrate1;
+        p1buffersize = bufferLevel1;
     }, 1000);
 
 
@@ -57,6 +66,9 @@ function startVideo() {
         console.log(player2.getAverageThroughput('video'));
         document.getElementById('reportedBitrate2').innerText = bitrate2 + " Kbps";
         document.getElementById('bufferLevel2').innerText = bufferLevel2 + " sec";
+        // for live plotting
+        p2bitrate = bitrate2;
+        p2buffersize = bufferLevel2;
     }, 1000);
 
     if (video1.webkitVideoDecodedByteCount != undefined) {
@@ -196,3 +208,12 @@ function callPyScript(){
     console.log(getPy.responseText)
     
 }
+
+function getP1Bitrate() {
+    return p1bitrate;
+}
+
+function getP1Buffersize() {
+    return p1buffersize;
+}
+

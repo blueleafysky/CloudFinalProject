@@ -4,6 +4,7 @@
         <link rel="stylesheet" href="./contrib/akamai/controlbar/controlbar.css">
 
         <script src="./jquery-3.5.0.min.js"></script>
+        <script src="./plotly.min.js"></script>
         <script src="./dist/dash.all.min.js"></script>
         <script src="./contrib/akamai/controlbar/ControlBar.js"></script>
         <script src="./rules/LowestBitrateRule.js"></script>
@@ -103,6 +104,46 @@
                         <button onclick="configurePlayback(1)">Update</button>
                     </div>
                 </fieldset>
+            </div>
+            <div class=wrapper>
+                <div id ="chart"></div>
+
+                <script>
+                    function getData() {
+                        return getP1Bitrate();
+                    }
+
+                    function getData1() {
+                        return getP1Buffersize();
+                    }
+
+                    Plotly.plot('chart',[{
+                        y:[getData()],
+                        type:'line',
+                        name:'Bitrate (kbps)'
+                    }, {
+                        y:[getData1()],
+                        type:'line',
+                        name:'Buffer Size (s)'
+                    }]);
+
+                    var count =0;
+
+                    setInterval(function(){
+                        Plotly.extendTraces('chart',{
+                            y:[[getData()], [getData1()]]},[0,1]);
+                        count++;
+
+                        if(cnt > 200) {
+                            Plotly.relayout('chart',{
+                                xaxis: {
+                                    range:[cnt-200]
+                                }
+                            })
+                        }
+                    },200);
+                </script>
+
             </div>
         </div>
         <div>
