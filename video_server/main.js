@@ -178,6 +178,18 @@ function configurePlayback(inp) {
                     }
                 });
                 break;
+            case 'HighestBitrateRule':
+                    player.removeAllABRCustomRule();
+                    player.addABRCustomRule('qualitySwitchRules', 'HighestBitrateRule', HighestBitrateRule);
+                    player.updateSettings({
+                        'streaming': {
+                            'abr': {
+                                'useDefaultABRRules': false,
+                                'ABRStrategy': 'HighestBitrateRule'
+                            }
+                        }
+                    });
+                    break;
             case 'RLRule':
                 player.removeAllABRCustomRule();
                 player.addABRCustomRule('qualitySwitchRules', 'RLRule', RLRule);
