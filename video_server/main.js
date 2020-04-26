@@ -50,7 +50,6 @@ function startVideo() {
         document.getElementById('reportedBitrate1').innerText = bitrate1 + " Kbps";
         document.getElementById('bufferLevel1').innerText = bufferLevel1 + " sec";
         // for live plotting
-        p1bitrate = bitrate1;
         p1buffersize = bufferLevel1;
     }, 1000);
 
@@ -67,7 +66,6 @@ function startVideo() {
         document.getElementById('reportedBitrate2').innerText = bitrate2 + " Kbps";
         document.getElementById('bufferLevel2').innerText = bufferLevel2 + " sec";
         // for live plotting
-        p2bitrate = bitrate2;
         p2buffersize = bufferLevel2;
     }, 1000);
 
@@ -78,6 +76,8 @@ function startVideo() {
             var calculatedBitrate = (((video1.webkitVideoDecodedByteCount - numBytesPrev) / 1000) * 8) / timeElapsed;
             document.getElementById('calculatedBitrate1').innerText = Math.round(calculatedBitrate) + " Kbps";
             numBytesPrev = video1.webkitVideoDecodedByteCount;
+            // for live graphing 
+            p1bitrate = calculatedBitrate;
         }, timeElapsed * 1000);
     }
 
@@ -88,6 +88,8 @@ function startVideo() {
             var calculatedBitrate2 = (((video2.webkitVideoDecodedByteCount - numBytesPrev2) / 1000) * 8) / timeElapsed2;
             document.getElementById('calculatedBitrate2').innerText = Math.round(calculatedBitrate2) + " Kbps";
             numBytesPrev2 = video2.webkitVideoDecodedByteCount;
+            // for live graphing
+            p2bitrate = calculatedBitrate2;
         }, timeElapsed2 * 1000);
     } 
 }
@@ -207,13 +209,5 @@ function callPyScript(){
 
     console.log(getPy.responseText)
     
-}
-
-function getP1Bitrate() {
-    return p1bitrate;
-}
-
-function getP1Buffersize() {
-    return p1buffersize;
 }
 

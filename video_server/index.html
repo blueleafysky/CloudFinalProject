@@ -110,22 +110,38 @@
 
                 <script>
                     function getData() {
-                        return getP1Bitrate();
+                        return p1bitrate;
                     }
 
                     function getData1() {
-                        return getP1Buffersize();
+                        return p1buffersize;
                     }
+
+                    var layout = {
+                        title: 'Player 1 Stats',
+                        xaxis: {title: 'Time elapsed'},
+                        yaxis: {title: 'Bitrate (kbps)', autoscale: true},
+                        yaxis2:{
+                            title:'Buffer level (s)',
+                            overlaying: 'y',
+                            side:'right',
+                            autoscale:true
+                        }
+                    };
 
                     Plotly.plot('chart',[{
                         y:[getData()],
+                        yaxis:'y1',
+                        xaxis:'x1',
                         type:'line',
                         name:'Bitrate (kbps)'
                     }, {
                         y:[getData1()],
+                        yaxis:'y2',
+                        xaxis:'x1',
                         type:'line',
                         name:'Buffer Size (s)'
-                    }]);
+                    }], layout);
 
                     var count =0;
 
@@ -222,6 +238,62 @@
                         <button onclick="configurePlayback(2)">Update</button>
                     </div>
                 </fieldset>
+            </div>
+            <div class=wrapper2>
+                <div id ="chart2"></div>
+
+                <script>
+                    function getData3() {
+                        return p2bitrate;
+                    }
+
+                    function getData4() {
+                        return p2buffersize;
+                    }
+
+                    var layout = {
+                        title: 'Player 2 Stats',
+                        xaxis2: {title: 'Time elapsed'},
+                        yaxis3: {title: 'Bitrate (kbps)', autoscale: true},
+                        yaxis4:{
+                            title:'Buffer level (s)',
+                            overlaying: 'y3',
+                            side:'right',
+                            autoscale:true
+                        }
+                    };
+
+                    Plotly.plot('chart2',[{
+                        y:[getData3()],
+                        yaxis:'y3',
+                        xaxis:'x2',
+                        type:'line',
+                        name:'Bitrate (kbps)'
+                    }, {
+                        y:[getData4()],
+                        yaxis:'y4',
+                        xaxis:'x2',
+                        type:'line',
+                        name:'Buffer Size (s)'
+                    }], layout);
+
+                    var count =0;
+
+                    setInterval(function(){
+                        Plotly.extendTraces('chart2',{
+                            y:[[getData3()], [getData4()]]},[0,1]);
+                        count++;
+
+                        if(cnt > 200) {
+                            Plotly.relayout('chart2',{
+                                xaxis: {
+                                    range:[cnt-200]
+                                }
+                            })
+                        }
+                    },200);
+                </script>
+
             </div>
         </div>
         <div>
