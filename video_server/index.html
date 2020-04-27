@@ -4,11 +4,14 @@
         <link rel="stylesheet" href="./contrib/akamai/controlbar/controlbar.css">
 
         <script src="./jquery-3.5.0.min.js"></script>
+        <script src="./plotly.min.js"></script>
         <script src="./dist/dash.all.min.js"></script>
         <script src="./contrib/akamai/controlbar/ControlBar.js"></script>
         <script src="./rules/LowestBitrateRule.js"></script>
         <script src="./rules/DownloadRatioRule.js"></script>
         <script src="./rules/ThroughputRule.js"></script>
+        <script src="./rules/HighestBitrateRule.js.js"></script>
+        <script type="module" src="./rules/RLRule.js"></script>
         <script src="./main.js" type="text/javascript"></script>
         <script>
             document.addEventListener("DOMContentLoaded", function () {
@@ -92,8 +95,10 @@
                         <select type="dropdown" id="abr1">
                             <option value="default">Default</option>
                             <option value="LowestBitrateRule">Lowest Bitrate</option>
+                            <option value="HighestBitrateRule">Highest Bitrate</option>
                             <option value="DownloadRatioRule">Download Ratio Rule</option>
                             <option value="ThroughputRule">Throughput Rule</option>
+                            <option value="RLRule">RL Rule</option>
                          </select>
                     </div>
                     <div>
@@ -103,6 +108,62 @@
                         <button onclick="configurePlayback(1)">Update</button>
                     </div>
                 </fieldset>
+            </div>
+            <div class=wrapper>
+                <div id ="chart"></div>
+
+                <script>
+                    function getData() {
+                        return p1bitrate;
+                    }
+
+                    function getData1() {
+                        return p1buffersize;
+                    }
+
+                    var layout = {
+                        title: 'Player 1 Stats',
+                        xaxis: {title: 'Time elapsed'},
+                        yaxis: {title: 'Bitrate (kbps)', autoscale: true},
+                        yaxis2:{
+                            title:'Buffer level (s)',
+                            overlaying: 'y',
+                            side:'right',
+                            autoscale:true
+                        }
+                    };
+
+                    Plotly.plot('chart',[{
+                        y:[getData()],
+                        yaxis:'y1',
+                        xaxis:'x1',
+                        type:'line',
+                        name:'Bitrate (kbps)'
+                    }, {
+                        y:[getData1()],
+                        yaxis:'y2',
+                        xaxis:'x1',
+                        type:'line',
+                        name:'Buffer Size (s)'
+                    }], layout);
+
+                    var count=0;
+
+                    setInterval(function(){
+                        Plotly.extendTraces('chart',{
+                            y:[[getData()], [getData1()]]},[0,1]);
+                        count++;
+
+                        if(count > 200) {
+                            Plotly.relayout('chart',{
+                                xaxis: {
+                                    range:[count-200,count]
+                                }
+                            })
+                        }
+                    },200);
+                </script>
+
             </div>
         </div>
         <div>
@@ -170,8 +231,10 @@
                         <select type="dropdown" id="abr2">
                             <option value="default">Default</option>
                             <option value="LowestBitrateRule">Lowest Bitrate</option>
+                            <option value="HighestBitrateRule">Highest Bitrate</option>
                             <option value="DownloadRatioRule">Download Ratio Rule</option>
                             <option value="ThroughputRule">Throughput Rule</option>
+                            <option value="RLRule">RL Rule</option>
                          </select>
                     </div>
                     <div>
@@ -181,6 +244,62 @@
                         <button onclick="configurePlayback(2)">Update</button>
                     </div>
                 </fieldset>
+            </div>
+            <div class=wrapper2>
+                <div id ="chart2"></div>
+
+                <script>
+                    function getData3() {
+                        return p2bitrate;
+                    }
+
+                    function getData4() {
+                        return p2buffersize;
+                    }
+
+                    var layout = {
+                        title: 'Player 2 Stats',
+                        xaxis2: {title: 'Time elapsed'},
+                        yaxis3: {title: 'Bitrate (kbps)', autoscale: true},
+                        yaxis4:{
+                            title:'Buffer level (s)',
+                            overlaying: 'y3',
+                            side:'right',
+                            autoscale:true
+                        }
+                    };
+
+                    Plotly.plot('chart2',[{
+                        y:[getData3()],
+                        yaxis:'y3',
+                        xaxis:'x2',
+                        type:'line',
+                        name:'Bitrate (kbps)'
+                    }, {
+                        y:[getData4()],
+                        yaxis:'y4',
+                        xaxis:'x2',
+                        type:'line',
+                        name:'Buffer Size (s)'
+                    }], layout);
+
+                    var count1 =0;
+
+                    setInterval(function(){
+                        Plotly.extendTraces('chart2',{
+                            y:[[getData3()], [getData4()]]},[0,1]);
+                        count1++;
+
+                        if(count1 > 200) {
+                            Plotly.relayout('chart2',{
+                                xaxis2: {
+                                    range:[count1-200,count1]
+                                }
+                            })
+                        }
+                    },200);
+                </script>
+
             </div>
         </div>
         <div>

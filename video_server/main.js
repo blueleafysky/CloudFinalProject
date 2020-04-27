@@ -2,11 +2,17 @@ var player1;
 var player2;
 var controlbar1;
 var controlbar2;
-// const url = 'http://localhost/Manifest.mpd'; //for local server start
+const url = 'http://localhost:8000/Manifest.mpd'; //for local server start
 const apiPort = 5000
 const restAPI = `http://localhost:${apiPort}/`
-const url = 'http://10.0.0.2:8000/Manifest.mpd'; // for mininet
+// const url = 'http://10.0.0.2:8000/Manifest.mpd'; // for mininet
 // const url = 'https://dash.akamaized.net/akamai/bbb_30fps/bbb_30fps.mpd' //test cdn buffer changes only visible for larger videos 
+
+// globals for the live plotting
+var p1bitrate;
+var p1buffersize;
+var p2bitrate;
+var p2buffersize;
 
 function startVideo() {
     var video1 = document.querySelector(".videoContainer video");
@@ -43,6 +49,8 @@ function startVideo() {
         console.log(player1.getAverageThroughput("video"));
         document.getElementById('reportedBitrate1').innerText = bitrate1 + " Kbps";
         document.getElementById('bufferLevel1').innerText = bufferLevel1 + " sec";
+        // for live plotting
+        p1buffersize = bufferLevel1;
     }, 1000);
 
 
@@ -57,6 +65,8 @@ function startVideo() {
         console.log(player2.getAverageThroughput('video'));
         document.getElementById('reportedBitrate2').innerText = bitrate2 + " Kbps";
         document.getElementById('bufferLevel2').innerText = bufferLevel2 + " sec";
+        // for live plotting
+        p2buffersize = bufferLevel2;
     }, 1000);
 
     if (video1.webkitVideoDecodedByteCount != undefined) {
@@ -66,6 +76,8 @@ function startVideo() {
             var calculatedBitrate = (((video1.webkitVideoDecodedByteCount - numBytesPrev) / 1000) * 8) / timeElapsed;
             document.getElementById('calculatedBitrate1').innerText = Math.round(calculatedBitrate) + " Kbps";
             numBytesPrev = video1.webkitVideoDecodedByteCount;
+            // for live graphing 
+            p1bitrate = calculatedBitrate;
         }, timeElapsed * 1000);
     }
 
@@ -76,6 +88,8 @@ function startVideo() {
             var calculatedBitrate2 = (((video2.webkitVideoDecodedByteCount - numBytesPrev2) / 1000) * 8) / timeElapsed2;
             document.getElementById('calculatedBitrate2').innerText = Math.round(calculatedBitrate2) + " Kbps";
             numBytesPrev2 = video2.webkitVideoDecodedByteCount;
+            // for live graphing
+            p2bitrate = calculatedBitrate2;
         }, timeElapsed2 * 1000);
     } 
 }
@@ -129,8 +143,7 @@ function configurePlayback(inp) {
     if(changeAbr){
         switch(abr){
             case 'LowestBitrateRule':
-                player.removeABRCustomRule('ThroughputRule');
-                player.removeABRCustomRule('DownloadRatioRule');
+                player.removeAllABRCustomRule();
                 player.addABRCustomRule('qualitySwitchRules', 'LowestBitrateRule', LowestBitrateRule);
                 player.updateSettings({
                     'streaming': {
@@ -142,8 +155,7 @@ function configurePlayback(inp) {
                 });
                 break;
             case 'DownloadRatioRule':
-                player.removeABRCustomRule('LowestBitrateRule');
-                player.removeABRCustomRule('ThroughputRule');
+                player.removeAllABRCustomRule();
                 player.addABRCustomRule('qualitySwitchRules', 'DownloadRatioRule', DownloadRatioRule);
                 player.updateSettings({
                     'streaming': {
@@ -155,8 +167,7 @@ function configurePlayback(inp) {
                 });
                 break;
             case 'ThroughputRule':
-                player.removeABRCustomRule('LowestBitrateRule');
-                player.removeABRCustomRule('DownloadRatioRule');
+                player.removeAllABRCustomRule();
                 player.addABRCustomRule('qualitySwitchRules', 'ThroughputRule', CustomThroughputRule);
                 player.updateSettings({
                     'streaming': {
@@ -167,10 +178,32 @@ function configurePlayback(inp) {
                     }
                 });
                 break;
+            case 'HighestBitrateRule':
+                    player.removeAllABRCustomRule();
+                    player.addABRCustomRule('qualitySwitchRules', 'HighestBitrateRule', HighestBitrateRule);
+                    player.updateSettings({
+                        'streaming': {
+                            'abr': {
+                                'useDefaultABRRules': false,
+                                'ABRStrategy': 'HighestBitrateRule'
+                            }
+                        }
+                    });
+                    break;
+            case 'RLRule':
+                player.removeAllABRCustomRule();
+                player.addABRCustomRule('qualitySwitchRules', 'RLRule', RLRule);
+                player.updateSettings({
+                    'streaming': {
+                        'abr': {
+                            'useDefaultABRRules': false,
+                            'ABRStrategy': 'RLRule'
+                        }
+                    }
+                });
+                break;
             default:
-                player.removeABRCustomRule('LowestBitrateRule');
-                player.removeABRCustomRule('ThroughputRule');
-                player.removeABRCustomRule('DownloadRatioRule');
+                player.removeAllABRCustomRule();
                 player.updateSettings({
                     'streaming': {
                         'abr': {
@@ -196,3 +229,4 @@ function callPyScript(){
     console.log(getPy.responseText)
     
 }
+
