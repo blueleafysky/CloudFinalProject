@@ -12,9 +12,19 @@ CRITIC_LR_RATE = 0.001
 VIDEO_BIT_RATE_OPTIONS = [] #kpbs, hardcoded based on possible options for video
 RANDOM_SEED = 42
 RAND_RANGE = 1000
+BUFFER_NORM_FACTOR
 PRETRAINED = "../rl/test/models/log_reward_equal.ckpt" #pathway to pretrained model file
 
 def calculate_rl_bitrate(prev_quality, buffer_size, rebuffering_time, video_chunk_size, next_video_chunk_sizes, chunks_remaining):
+    """
+    prev_quality: kbps
+    buffer_size: seconds
+    rebuffering_time: seconds
+    video_chunk_size: megabytes
+    next_video_chunk_sizes: megabytes, list of 6 values
+    chunks_remaining: integer
+    """
+
     np.random.seed(RANDOM_SEED)
     with tf.Session() as sess:
 
