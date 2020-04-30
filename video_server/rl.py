@@ -13,7 +13,7 @@ CRITIC_LR_RATE = 0.001
 VIDEO_BIT_RATE_OPTIONS = [300,750,1200,1850,2850,4300] #kpbs, hardcoded based on possible options for video
 RANDOM_SEED = 42
 RAND_RANGE = 1000
-BUFFER_NORM_FACTOR
+BUFFER_NORM_FACTOR = 10.0
 PRETRAINED = "../rl/test/models/log_reward_equal.ckpt" #pathway to pretrained model file
 
 def calculate_rl_bitrate(prev_quality, buffer_size, rebuffering_time, video_chunk_size, next_video_chunk_sizes, chunks_remaining):
