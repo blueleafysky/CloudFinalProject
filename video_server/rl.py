@@ -1,15 +1,16 @@
-os.environ['CUDA_VISIBLE_DEVICES']=''
-
 import numpy as np
 import tensorflow as tf
 import a3c
+import os
+
+os.environ['CUDA_VISIBLE_DEVICES']=''
 
 S_INFO = 6  # bit_rate, buffer_size, rebuffering_time, bandwidth_measurement, chunk_til_video_end
 S_LEN = 8  # take how many frames in the past
 A_DIM = 6
 ACTOR_LR_RATE = 0.0001
 CRITIC_LR_RATE = 0.001
-VIDEO_BIT_RATE_OPTIONS = [] #kpbs, hardcoded based on possible options for video
+VIDEO_BIT_RATE_OPTIONS = [4300, 2850, 1850] #kpbs, hardcoded based on possible options for video
 RANDOM_SEED = 42
 RAND_RANGE = 1000
 BUFFER_NORM_FACTOR
@@ -37,29 +38,31 @@ def calculate_rl_bitrate(prev_quality, buffer_size, rebuffering_time, video_chun
                                    learning_rate=CRITIC_LR_RATE)
 
         sess.run(tf.initialize_all_variables())
-            saver = tf.train.Saver()
+        saver = tf.train.Saver()
 
-            #bring up pretrained model weights
-            nn_model = PRETRAINED
-            if nn_model is not None:
-                saver.restore(sess, nn_model)
-                print("Model restored.")
+        #bring up pretrained model weights
+        nn_model = PRETRAINED
+        if nn_model is not None:
+            saver.restore(sess, nn_model)
+            print("Model restored.")
 
-            #initialize state
+        #initialize state
+        state = [np.zeros((S_INFO, S_LEN))]
+
+        #set state to input values
+        try:
+            state[0, -1] = prev_quality / float(np.max(VIDEO_BIT_RATE_OPTIONS))
+            state[1, -1] = buffer_size
+            state[2, -1] = rebuffering_time
+            state[3, -1] = video_chunk_size
+            state[4, :A_DIM] = next_video_chunk_sizes
+            state[5, -1] = chunks_remaining
+        except:
             state = [np.zeros((S_INFO, S_LEN))]
 
-            #set state to input values
-            try:
-                state[0, -1] = prev_quality / float(np.max(VIDEO_BIT_RATE_OPTIONS))
-                state[1, -1] = buffer_size
-                state[2, -1] = rebuffering_time
-                state[3, -1] = video_chunk_size
-                state[4, :A_DIM] = next_video_chunk_sizes
-                state[5, -1] = chunks_remaining
+        #make prediction
+        action_prob = actor.predict(np.reshape(state, (1, S_INFO, S_LEN)))
+        action_cumsum = np.cumsum(action_prob)
+        bit_rate = (action_cumsum > np.random.randint(1, RAND_RANGE) / float(RAND_RANGE)).argmax()
 
-            #make prediction
-            action_prob = actor.predict(np.reshape(state, (1, S_INFO, S_LEN)))
-            action_cumsum = np.cumsum(action_prob)
-            bit_rate = (action_cumsum > np.random.randint(1, RAND_RANGE) / float(RAND_RANGE)).argmax()
-
-            return bit_rate
+        return bit_rate
