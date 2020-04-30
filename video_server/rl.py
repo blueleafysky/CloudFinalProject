@@ -10,7 +10,7 @@ S_LEN = 8  # take how many frames in the past
 A_DIM = 6
 ACTOR_LR_RATE = 0.0001
 CRITIC_LR_RATE = 0.001
-VIDEO_BIT_RATE_OPTIONS = [4300, 2850, 1850] #kpbs, hardcoded based on possible options for video
+VIDEO_BIT_RATE_OPTIONS = [300,750,1200,1850,2850,4300] #kpbs, hardcoded based on possible options for video
 RANDOM_SEED = 42
 RAND_RANGE = 1000
 BUFFER_NORM_FACTOR
