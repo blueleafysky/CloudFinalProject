@@ -47,18 +47,18 @@ def calculate_rl_bitrate(prev_quality, buffer_size, rebuffering_time, video_chun
             print("Model restored.")
 
         #initialize state
-        state = [np.zeros((S_INFO, S_LEN))]
+        state = np.zeros((S_INFO, S_LEN))
+        # state = np.roll(state, -1, axis=1)
+
 
         #set state to input values
-        try:
-            state[0, -1] = prev_quality / float(np.max(VIDEO_BIT_RATE_OPTIONS))
-            state[1, -1] = buffer_size
-            state[2, -1] = rebuffering_time
-            state[3, -1] = video_chunk_size
-            state[4, :A_DIM] = next_video_chunk_sizes
-            state[5, -1] = chunks_remaining
-        except:
-            state = [np.zeros((S_INFO, S_LEN))]
+        print(float(np.max(VIDEO_BIT_RATE_OPTIONS)))
+        state[0, -1] = prev_quality / float(np.max(VIDEO_BIT_RATE_OPTIONS))
+        state[1, -1] = buffer_size
+        state[2, -1] = rebuffering_time
+        state[3, -1] = video_chunk_size
+        state[4, :A_DIM] = next_video_chunk_sizes
+        state[5, -1] = chunks_remaining
 
         #make prediction
         action_prob = actor.predict(np.reshape(state, (1, S_INFO, S_LEN)))
@@ -66,3 +66,7 @@ def calculate_rl_bitrate(prev_quality, buffer_size, rebuffering_time, video_chun
         bit_rate = (action_cumsum > np.random.randint(1, RAND_RANGE) / float(RAND_RANGE)).argmax()
 
         return bit_rate
+
+if __name__ == '__main__':
+    a = calculate_rl_bitrate(300,0,0, 5,[1,2,4,5,6,7], 10)
+    print(float(a))
