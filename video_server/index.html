@@ -110,17 +110,28 @@
 
                 <script>
                     function getData() {
-                        return p1bitrate;
+                        var bitratenow = p1bitrate;
+                        if (bitratenow < 0) {
+                            return 0;
+                        }
+                        return bitratenow;
+                        // return p1bitrate;
                     }
 
                     function getData1() {
-                        return player1.dashMetrics1.getCurrentBufferLevel('video', true);
-                        // return p1buffersize;
+                        //return player1.dashMetrics1.getCurrentBufferLevel('video', true);
+                        return p1buffersize;
                     }
 
                     var layout = {
                         title: 'Player 1 Stats',
-                        xaxis: {title: 'Time elapsed'},
+                        xaxis: {
+                            title: 'Time elapsed (s)',
+                            // type: 'date',
+                            // dtick: 2000,
+                            // tick0: 0,
+                            // ticks: "outside"
+                        },
                         yaxis: {title: 'Bitrate (kbps)', autoscale: true},
                         yaxis2:{
                             title:'Buffer level (s)',
@@ -131,7 +142,6 @@
                     };
 
                     Plotly.plot('chart',[{
-                        //dtick: '1000',
                         y:[getData()],
                         yaxis:'y1',
                         xaxis:'x1',
@@ -152,14 +162,14 @@
                             y:[[getData()], [getData1()]]},[0,1]);
                         count++;
 
-                        if(count > 200) {
+                        if(count > 30) {
                             Plotly.relayout('chart',{
                                 xaxis: {
-                                    range:[count-200,count]
+                                    range:[count-30,count]
                                 }
                             })
                         }
-                    },200);
+                    },1000);
                 </script>
 
             </div>
@@ -246,16 +256,23 @@
 
                 <script>
                     function getData3() {
-                        return p2bitrate;
+                        var bitratenow = p2bitrate;
+                        if (bitratenow < 0){
+                            return 0;
+                        } 
+                        return bitratenow;
+
+                        // return p2bitrate;
                     }
 
                     function getData4() {
-                        return player2.dashMetrics2.getCurrentBufferLevel('video', true);
+                        // return player2.dashMetrics2.getCurrentBufferLevel('video', true);
+                        return p2buffersize;
                     }
 
                     var layout = {
                         title: 'Player 2 Stats',
-                        xaxis2: {title: 'Time elapsed'},
+                        xaxis2: {title: 'Time elapsed (s)'},
                         yaxis3: {title: 'Bitrate (kbps)', autoscale: true},
                         yaxis4:{
                             title:'Buffer level (s)',
@@ -287,14 +304,14 @@
                             y:[[getData3()], [getData4()]]},[0,1]);
                         count1++;
 
-                        if(count1 > 200) {
+                        if(count1 > 30) {
                             Plotly.relayout('chart2',{
                                 xaxis2: {
-                                    range:[count1-200,count1]
+                                    range:[count1-30,count1]
                                 }
                             })
                         }
-                    },200);
+                    },1000);
                 </script>
 
             </div>
