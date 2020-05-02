@@ -114,7 +114,7 @@
                     }
 
                     function getData1() {
-                        return p1buffersize;
+                        return dashMetrics1.getCurrentBufferLevel('video', true);
                     }
 
                     var layout = {
@@ -248,7 +248,7 @@
                     }
 
                     function getData4() {
-                        return p2buffersize;
+                        return dashMetrics2.getCurrentBufferLevel('video', true);
                     }
 
                     var layout = {
