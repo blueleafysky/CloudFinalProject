@@ -114,8 +114,8 @@
                     }
 
                     function getData1() {
-                        // return dashMetrics1.getCurrentBufferLevel('video', true);
-                        return p1buffersize;
+                        return player1.dashMetrics1.getCurrentBufferLevel('video', true);
+                        // return p1buffersize;
                     }
 
                     var layout = {
@@ -131,6 +131,7 @@
                     };
 
                     Plotly.plot('chart',[{
+                        dtick: '1000',
                         y:[getData()],
                         yaxis:'y1',
                         xaxis:'x1',
@@ -249,7 +250,7 @@
                     }
 
                     function getData4() {
-                        return dashMetrics2.getCurrentBufferLevel('video', true);
+                        return player2.dashMetrics2.getCurrentBufferLevel('video', true);
                     }
 
                     var layout = {
@@ -265,6 +266,7 @@
                     };
 
                     Plotly.plot('chart2',[{
+                        dtick: '1000',
                         y:[getData3()],
                         yaxis:'y3',
                         xaxis:'x2',
