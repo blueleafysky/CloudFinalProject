@@ -1,4 +1,8 @@
 var HighestBitrateRule;
+var startRebufferTime = 0;
+var endRebufferTime = 0;
+var startRebufferCalc = false;
+var latestRebufferTime = null;
 
 // Rule that selects the lowest possible bitrate
 function RLRuleClass() {
@@ -8,6 +12,7 @@ function RLRuleClass() {
     let MetricsModel = factory.getSingletonFactoryByName('MetricsModel');
     let StreamController = factory.getSingletonFactoryByName('StreamController');
     let DashMetrics = factory.getSingletonFactoryByName('DashMetrics');
+    let Debug = factory.getSingletonFactoryByName('Debug');
     let context = this.context;
     let instance;
 
@@ -21,6 +26,8 @@ function RLRuleClass() {
         var mediaType = rulesContext.getMediaInfo().type;
         var metrics = metricsModel.getMetricsFor(mediaType, true);
         let dashMetrics = DashMetrics(context).getInstance();
+        let debug = Debug(context).getInstance();
+        console.log(debug);
         // const mediaInfo = rulesContext.getMediaInfo();
         // A smarter (real) rule could need analyze playback metrics to take
         // bitrate switching decision. Printing metrics here as a reference
@@ -39,7 +46,25 @@ function RLRuleClass() {
         let buffer = dashMetrics.getCurrentBufferLevel(mediaType);
         console.log(buffer)
         let a = dashMetrics.getCurrentBufferState(mediaType);
+
+        // Try and estimate total rebuffering time
+        if(a != null && a.state == "bufferStalled" && startRebufferCalc == false){
+            console.log("bufferStalled");
+            startRebufferTime = Date.now();
+            startRebufferCalc = true;
+        }
+        if(startRebufferCalc == true && a.state != "bufferStalled"){
+            console.log("calculating rebuffering");
+            endRebufferTime = Date.now();
+            latestRebufferTime = (endRebufferTime - startRebufferTime)/1000;
+            startRebufferCalc = false;
+        }
+        if(latestRebufferTime != null){
+            console.log(latestRebufferTime);
+            latestRebufferTime = null;
+        }
         console.log(a);
+        console.log(context);
         // let bufferAdjusted =
         // let bandwidthEst =
         // let lastRequest
@@ -62,14 +87,15 @@ function RLRuleClass() {
             data: { mydata: data }
         });
         console.log('THIS INFORMATION:' + getPy.responseText);
-        if (current === highest) {
-            return SwitchRequest(context).create();
-        }
+        let q = parseInt(getPy.responseText);
+        // if (current === highest) {
+        //     return SwitchRequest(context).create();
+        // }
 
         // Ask to switch to the lowest bitrate
         let switchRequest = SwitchRequest(context).create();
-        switchRequest.quality = highest;
-        switchRequest.reason = 'Always switching to the lowest bitrate';
+        switchRequest.quality = q;
+        switchRequest.reason = 'Switch to RL predicted rate';
         switchRequest.priority = SwitchRequest.PRIORITY.STRONG;
         return switchRequest;
     }
