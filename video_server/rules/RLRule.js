@@ -1,95 +1,81 @@
-/**
- * The copyright in this software is being made available under the BSD License,
- * included below. This software may be subject to other third party and contributor
- * rights, including patent rights, and no such rights are granted under this license.
- *
- * Copyright (c) 2013, Dash Industry Forum.
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
- *  * Redistributions of source code must retain the above copyright notice, this
- *  list of conditions and the following disclaimer.
- *  * Redistributions in binary form must reproduce the above copyright notice,
- *  this list of conditions and the following disclaimer in the documentation and/or
- *  other materials provided with the distribution.
- *  * Neither the name of Dash Industry Forum nor the names of its
- *  contributors may be used to endorse or promote products derived from this software
- *  without specific prior written permission.
- *
- *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS AS IS AND ANY
- *  EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- *  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- *  IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
- *  INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- *  NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
- *  PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
- *  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- *  POSSIBILITY OF SUCH DAMAGE.
- */
-import SwitchRequest from '../SwitchRequest';
-import MediaPlayerModel from '../../models/MediaPlayerModel';
-import FactoryMaker from '../../../core/FactoryMaker';
-import Debug from '../../../core/Debug';
-import {HTTPRequest} from '../../vo/metrics/HTTPRequest';
+var HighestBitrateRule;
 
+// Rule that selects the lowest possible bitrate
+function RLRuleClass() {
 
-function RLRule(config) {
-
-    let instance;
+    let factory = dashjs.FactoryMaker;
+    let SwitchRequest = factory.getClassFactoryByName('SwitchRequest');
+    let MetricsModel = factory.getSingletonFactoryByName('MetricsModel');
+    let StreamController = factory.getSingletonFactoryByName('StreamController');
+    let DashMetrics = factory.getSingletonFactoryByName('DashMetrics');
     let context = this.context;
-    let log = Debug(context).getInstance().log;
-
-    let metricsModel = config.metricsModel;
-    let dashMetrics = config.dashMetrics;
-
-    let finished_requests = 0;
-
-    let lastSwitchTime,
-        mediaPlayerModel;
+    let instance;
 
     function setup() {
-        lastSwitchTime = 0;
-        mediaPlayerModel = MediaPlayerModel(context).getInstance();
     }
 
-    function execute (rulesContext, callback) {
-        // defaults to wanting to make a new request
-        var switchRequest = SwitchRequest(context).create(1000000, SwitchRequest.WEAK, {name: RLRule.__dashjs_factory_name})
+    // Always use lowest bitrate
+    function getMaxIndex(rulesContext) {
+        // here you can get some informations about metrics for example, to implement the rule
+        let metricsModel = MetricsModel(context).getInstance();
+        var mediaType = rulesContext.getMediaInfo().type;
+        var metrics = metricsModel.getMetricsFor(mediaType, true);
+        let dashMetrics = DashMetrics(context).getInstance();
+        // const mediaInfo = rulesContext.getMediaInfo();
+        // A smarter (real) rule could need analyze playback metrics to take
+        // bitrate switching decision. Printing metrics here as a reference
+        console.log(metrics);
 
-        // counts the number of completed and oustanding requests
-        let curr_reqs = dashMetrics.getHttpRequests(metricsModel.getReadOnlyMetricsFor('video'));
-        let completed = [];
-        let outstanding = [];
-        for ( let i = 0; i < curr_reqs.length; i++ ) {
-            let request = curr_reqs[i];
-            if (request.type === HTTPRequest.MEDIA_SEGMENT_TYPE && request._tfinish && request.tresponse && request.trace) {
-                completed.push(request);
-            }
-            if (request.type === HTTPRequest.MEDIA_SEGMENT_TYPE && !request._tfinish && request.tresponse && request.trace) {
-                outstanding.push(request);
-            }
+        // Get current bitrate
+        let streamController = StreamController(context).getInstance();
+        let abrController = rulesContext.getAbrController();
+        let current = abrController.getQualityFor(mediaType, streamController.getActiveStreamInfo());
+        let highest = abrController.getTopBitrateInfoFor(mediaType);
+        // console.log(abrController.getBitrateList(mediaInfo));
+        // console.log(abrController.getTopBitrateInfoFor(mediaType)); 
+        // If already in lowest bitrate, don't do anything
+        let lastQuality = abrController.getQualityFor(mediaType, streamController.getActiveStreamInfo());
+        console.log(lastQuality)
+        let buffer = dashMetrics.getCurrentBufferLevel(mediaType);
+        console.log(buffer)
+        let a = dashMetrics.getCurrentBufferState(mediaType);
+        console.log(a);
+        // let bufferAdjusted =
+        // let bandwidthEst =
+        // let lastRequest
+        // let lastRequested =
+        // let video = document.querySelector("video");
+        // let rebufferTime = video.total_rebuffer_time;
+        // console.log(rebufferTime);
+        // let lastChunkFinishTime =
+        // let lastChuckStartTime = 
+        // let lastChunkSize =
+        // var data = {'lastquality': lastQuality, 'buffer': bufferLevel, 'bufferAdjusted': bufferLevelAdjusted, 'bandwidthEst': bandwidthEst, 
+        //     'lastRequest': lastRequested, 'RebufferTime': window.total_rebuffer_time, 
+        //     'lastChunkFinishTime': lastHTTPRequest.tfinish.getTime(), 'lastChunkStartTime': lastHTTPRequest.tresponse.getTime(), 
+        //     'lastChunkSize': self.vbr.getChunkSize(lastRequested, lastQuality)};
+        var data = {'a':'b'};
+        var getPy = $.ajax({
+            type: "POST",
+            url: restAPI + "testABR",   
+            async: false,
+            data: { mydata: data }
+        });
+        console.log('THIS INFORMATION:' + getPy.responseText);
+        if (current === highest) {
+            return SwitchRequest(context).create();
         }
-        console.log("NUMBER OF COMPLETE: " + completed.length + " AT " + Date.now());
 
-        // only send request to RL server if the previous chunk has finished downloading (i.e., number of downloaded requests has gone up by 1)
-        // if not, then specify that we don't want to send anything to the RL server
-        if ( completed.length <= finished_requests ) {
-            switchRequest = SwitchRequest(context).create(SwitchRequest.NO_CHANGE, SwitchRequest.WEAK, {name: RLRule.__dashjs_factory_name});
-        } else {
-            finished_requests = completed.length;
-        }
-        callback(switchRequest);
-    }
-
-    function reset() {
-        lastSwitchTime = 0;
+        // Ask to switch to the lowest bitrate
+        let switchRequest = SwitchRequest(context).create();
+        switchRequest.quality = highest;
+        switchRequest.reason = 'Always switching to the lowest bitrate';
+        switchRequest.priority = SwitchRequest.PRIORITY.STRONG;
+        return switchRequest;
     }
 
     instance = {
-        execute: execute,
-        reset: reset
+        getMaxIndex: getMaxIndex
     };
 
     setup();
@@ -97,5 +83,5 @@ function RLRule(config) {
     return instance;
 }
 
-RLRule.__dashjs_factory_name = 'RLRule';
-export default FactoryMaker.getClassFactory(RLRule);
+RLRuleClass.__dashjs_factory_name = 'RLRule';
+RLRule = dashjs.FactoryMaker.getClassFactory(RLRuleClass);

@@ -1,3 +1,3 @@
 #TODO integrate scripts
 def output():
-    return -1
+    return 0
