@@ -50,16 +50,16 @@ function LowestBitrateRuleClass() {
         let metricsModel = MetricsModel(context).getInstance();
         var mediaType = rulesContext.getMediaInfo().type;
         var metrics = metricsModel.getMetricsFor(mediaType, true);
-
+        const mediaInfo = rulesContext.getMediaInfo();
         // A smarter (real) rule could need analyze playback metrics to take
         // bitrate switching decision. Printing metrics here as a reference
-        console.log(metrics);
+        // console.log(metrics);
 
         // Get current bitrate
         let streamController = StreamController(context).getInstance();
         let abrController = rulesContext.getAbrController();
         let current = abrController.getQualityFor(mediaType, streamController.getActiveStreamInfo());
-
+        
         // If already in lowest bitrate, don't do anything
         if (current === 0) {
             return SwitchRequest(context).create();
