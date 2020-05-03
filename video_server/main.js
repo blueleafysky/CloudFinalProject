@@ -128,8 +128,9 @@ function configurePlayback(inp) {
         maxBitrate = parseInt(document.getElementById('maxBitrate2').value, 10);
         abr = document.getElementById('abr2').value;
         changeAbr = document.getElementById('changeabr2').checked;
-
     }
+
+    start_graph(inp, true);
 
     console.log(bufferAtTopQuality)
     player1.updateSettings({
@@ -236,6 +237,7 @@ function callPyScript(){
     
 }
 
+var xaxis_count = 1;
 function start_graph(player_num, is_change) {
     var layout1 = {
         title: 'Player 1 Stats',
@@ -254,38 +256,97 @@ function start_graph(player_num, is_change) {
     var traces1 = [{
         y:[getData()],
         yaxis:'y1',
-        xaxis:'x1',
+        xaxis:'x' + xaxis_count,
         type:'line',
         name:'Bitrate (kbps)'
         }, {
         y:[getData1()],
         yaxis:'y2',
-        xaxis:'x1',
+        xaxis:'x' + xaxis_count,
         type:'line',
         name:'Buffer Size (s)'
     }];
 
     if (player_num == 1 && is_change == false){
         Plotly.plot('chart', traces1, layout1);
+        setInterval1();
 
-        var count=0;
-
-        setInterval(function(){
-            Plotly.extendTraces('chart',{
-                y:[[getData()], [getData1()]]},[0,1]);
-                count++;
-
-                if(count > 30) {
-                    Plotly.relayout('chart',{
-                        xaxis: {
-                            range:[count-30,count]
-                        }
-                    })
-                }
-        },1000);
-    } else if (inp == 1 && is_change == true){
+    } else if (player_num == 1 && is_change == true){
         Plotly.newPlot('chart', traces1, layout1);
+        setInterval1();
     }
+
+    var layout2 = {
+        title: 'Player 2 Stats',
+        xaxis2: {title: 'Time elapsed (s)'},
+        yaxis3: {title: 'Bitrate (kbps)', autoscale: true},
+        yaxis4:{
+            title:'Buffer level (s)',
+            overlaying: 'y3',
+            side:'right',
+            autoscale:true
+        }
+    };
+
+    var traces2 = [{
+                        y:[getData3()],
+                        yaxis:'y3',
+                        xaxis:'x' + xaxis_count,
+                        type:'line',
+                        name:'Bitrate (kbps)'
+                    }, {
+                        y:[getData4()],
+                        yaxis:'y4',
+                        xaxis:'x' + xaxis_count,
+                        type:'line',
+                        name:'Buffer Size (s)'
+                    }]
+
+    if (player_num == 2 && is_change == false){
+        Plotly.plot('chart2', traces2, layout2);
+        setInterval2();
+
+    } else if (player_num == 2 && is_change == true){
+        Plotly.newPlot('chart2', traces2, layout2);
+        setInterval2();
+    }
+    // if the xaxis isn't reinstantiated on an update, the graph is off-centered
+    xaxis_count++;
+}
+
+function setInterval1(){
+    var count=0;
+
+    setInterval(function(){
+        Plotly.extendTraces('chart',{
+            y:[[getData()], [getData1()]]},[0,1]);
+            count++;
+
+            if(count > 30) {
+                Plotly.relayout('chart',{
+                    xaxis: {
+                        range:[count-30,count]
+                    }
+                })
+            }
+    },1000);
+}
+
+function setInterval2(){
+    var count1 = 0;
+    setInterval(function(){
+        Plotly.extendTraces('chart2',{
+            y:[[getData3()], [getData4()]]},[0,1]);
+            count1++;
+
+            if(count1 > 30) {
+                Plotly.relayout('chart2',{
+                    xaxis2: {
+                    range:[count1-30,count1]
+                    }
+                })
+            }
+    },1000);
 }
 
 function getData() {
@@ -301,5 +362,20 @@ function getData1() {
     //return player1.dashMetrics1.getCurrentBufferLevel('video', true);
                         
     return p1buffersize;
+}
+
+function getData3() {
+    var bitratenow = p2bitrate;
+    if (bitratenow < 0){
+        return 0;
+    } 
+    return bitratenow;
+
+    // return p2bitrate;
+}
+
+function getData4() {
+    // return player2.dashMetrics2.getCurrentBufferLevel('video', true);
+    return p2buffersize;
 }
 
