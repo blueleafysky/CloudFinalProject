@@ -113,67 +113,65 @@
                 <div id ="chart"></div>
 
                 <script>
-                    function getData() {
-                        var bitratenow = p1bitrate;
-                        if (bitratenow < 0) {
-                            return 0;
-                        }
-                        return bitratenow;
-                        // return p1bitrate;
-                    }
+                    start_graph(1, false);
+                    // function getData() {
+                    //     var bitratenow = p1bitrate;
+                    //     if (bitratenow < 0) {
+                    //         return 0;
+                    //     }
+                    //     return bitratenow;
+                    //     // return p1bitrate;
+                    // }
 
-                    function getData1() {
-                        //return player1.dashMetrics1.getCurrentBufferLevel('video', true);
-                        return p1buffersize;
-                    }
+                    // function getData1() {
+                    //     //return player1.dashMetrics1.getCurrentBufferLevel('video', true);
 
-                    var layout = {
-                        title: 'Player 1 Stats',
-                        xaxis: {
-                            title: 'Time elapsed (s)',
-                            // type: 'date',
-                            // dtick: 2000,
-                            // tick0: 0,
-                            // ticks: "outside"
-                        },
-                        yaxis: {title: 'Bitrate (kbps)', autoscale: true},
-                        yaxis2:{
-                            title:'Buffer level (s)',
-                            overlaying: 'y',
-                            side:'right',
-                            autoscale:true
-                        }
-                    };
+                    //     return p1buffersize;
+                    // }
 
-                    Plotly.plot('chart',[{
-                        y:[getData()],
-                        yaxis:'y1',
-                        xaxis:'x1',
-                        type:'line',
-                        name:'Bitrate (kbps)'
-                    }, {
-                        y:[getData1()],
-                        yaxis:'y2',
-                        xaxis:'x1',
-                        type:'line',
-                        name:'Buffer Size (s)'
-                    }], layout);
+                    // var layout = {
+                    //     title: 'Player 1 Stats',
+                    //     xaxis: {
+                    //         title: 'Time elapsed (s)',
+                    //     },
+                    //     yaxis: {title: 'Bitrate (kbps)', autoscale: true},
+                    //     yaxis2:{
+                    //         title:'Buffer level (s)',
+                    //         overlaying: 'y',
+                    //         side:'right',
+                    //         autoscale:true
+                    //     }
+                    // };
 
-                    var count=0;
+                    // Plotly.plot('chart',[{
+                    //     y:[getData()],
+                    //     yaxis:'y1',
+                    //     xaxis:'x1',
+                    //     type:'line',
+                    //     name:'Bitrate (kbps)'
+                    // }, {
+                    //     y:[getData1()],
+                    //     yaxis:'y2',
+                    //     xaxis:'x1',
+                    //     type:'line',
+                    //     name:'Buffer Size (s)'
+                    // }], layout);
 
-                    setInterval(function(){
-                        Plotly.extendTraces('chart',{
-                            y:[[getData()], [getData1()]]},[0,1]);
-                        count++;
+                    // var count=0;
 
-                        if(count > 30) {
-                            Plotly.relayout('chart',{
-                                xaxis: {
-                                    range:[count-30,count]
-                                }
-                            })
-                        }
-                    },1000);
+                    // setInterval(function(){
+                    //     Plotly.extendTraces('chart',{
+                    //         y:[[getData()], [getData1()]]},[0,1]);
+                    //     count++;
+
+                    //     if(count > 30) {
+                    //         Plotly.relayout('chart',{
+                    //             xaxis: {
+                    //                 range:[count-30,count]
+                    //             }
+                    //         })
+                    //     }
+                    // },1000);
                 </script>
 
             </div>

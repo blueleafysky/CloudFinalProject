@@ -53,6 +53,8 @@ function startVideo() {
         document.getElementById('bufferLevel1').innerText = bufferLevel1 + " sec";
         // for live plotting
         p1buffersize = bufferLevel1;
+        // var repId1_1 = dashMetrics1.getCurrentRepresentationSwitch('video', true);
+        // p1bitrate = repId1_1 ? Math.round(dashAdapter1.getBandwidthForRepresentation(repId1.to, periodId1) / 1000): NaN;
     }, 1000);
 
 
@@ -69,6 +71,7 @@ function startVideo() {
         document.getElementById('bufferLevel2').innerText = bufferLevel2 + " sec";
         // for live plotting
         p2buffersize = bufferLevel2;
+        // p2bitrate = repId2 ? Math.round(dashAdapter2.getBandwidthForRepresentation(repId2, periodId2) / 1000): NaN;
     }, 1000);
 
     if (video1.webkitVideoDecodedByteCount != undefined) {
@@ -114,6 +117,7 @@ function configurePlayback(inp) {
         maxBitrate = parseInt(document.getElementById('maxBitrate1').value, 10);
         abr = document.getElementById('abr1').value;
         changeAbr = document.getElementById('changeabr1').checked;
+        
     }
     if(inp == 2){
         player = player2
@@ -230,5 +234,72 @@ function callPyScript(){
 
     console.log(getPy.responseText)
     
+}
+
+function start_graph(player_num, is_change) {
+    var layout1 = {
+        title: 'Player 1 Stats',
+        xaxis: {
+        title: 'Time elapsed (s)',
+        },
+        yaxis: {title: 'Bitrate (kbps)', autoscale: true},
+        yaxis2:{
+            title:'Buffer level (s)',
+            overlaying: 'y',
+            side:'right',
+            autoscale:true
+        }
+    };
+
+    var traces1 = [{
+        y:[getData()],
+        yaxis:'y1',
+        xaxis:'x1',
+        type:'line',
+        name:'Bitrate (kbps)'
+        }, {
+        y:[getData1()],
+        yaxis:'y2',
+        xaxis:'x1',
+        type:'line',
+        name:'Buffer Size (s)'
+    }];
+
+    if (player_num == 1 && is_change == false){
+        Plotly.plot('chart', traces1, layout1);
+
+        var count=0;
+
+        setInterval(function(){
+            Plotly.extendTraces('chart',{
+                y:[[getData()], [getData1()]]},[0,1]);
+                count++;
+
+                if(count > 30) {
+                    Plotly.relayout('chart',{
+                        xaxis: {
+                            range:[count-30,count]
+                        }
+                    })
+                }
+        },1000);
+    } else if (inp == 1 && is_change == true){
+        Plotly.newPlot('chart', traces1, layout1);
+    }
+}
+
+function getData() {
+    var bitratenow = p1bitrate;
+    if (bitratenow < 0) {
+        return 0;
+    }
+    return bitratenow;
+    // return p1bitrate;
+}
+
+function getData1() {
+    //return player1.dashMetrics1.getCurrentBufferLevel('video', true);
+                        
+    return p1buffersize;
 }
 
