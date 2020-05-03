@@ -224,13 +224,15 @@ function configurePlayback(inp) {
     }
 }
 
+// Use for flask testing
 function callPyScript(){
-    var input = {'a': 'b'}
+    var input = {'a': 'b', 'c': [1,2,3]}
     var getPy = $.ajax({
         type: "POST",
         url: restAPI + "testABR",
         async: false,
-        data: { mydata: input }
+        crossDomain:true,
+        data: { mydata: JSON.stringify(input) }
     });
 
     console.log(getPy.responseText)
