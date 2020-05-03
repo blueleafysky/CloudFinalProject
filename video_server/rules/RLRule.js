@@ -35,21 +35,11 @@ function RLRuleClass() {
         var mediaType = rulesContext.getMediaInfo().type;
         var metrics = metricsModel.getMetricsFor(mediaType, true);
         let dashMetrics = DashMetrics(context).getInstance();
-        let debug = Debug(context).getInstance();
-        console.log(debug);
-        // const mediaInfo = rulesContext.getMediaInfo();
-        // A smarter (real) rule could need analyze playback metrics to take
-        // bitrate switching decision. Printing metrics here as a reference
-        console.log(metrics);
 
         // Get current bitrate
         let streamController = StreamController(context).getInstance();
         let abrController = rulesContext.getAbrController();
-        let current = abrController.getQualityFor(mediaType, streamController.getActiveStreamInfo());
-        let highest = abrController.getTopBitrateInfoFor(mediaType);
-        // console.log(abrController.getBitrateList(mediaInfo));
-        // console.log(abrController.getTopBitrateInfoFor(mediaType)); 
-        // If already in lowest bitrate, don't do anything
+
         let quality = abrController.getQualityFor(mediaType, streamController.getActiveStreamInfo());
         let buffer = dashMetrics.getCurrentBufferLevel(mediaType);
         let bufferState = dashMetrics.getCurrentBufferState(mediaType);
@@ -71,7 +61,6 @@ function RLRuleClass() {
             lastReq = url.match("[0-9]+.m4s");
             lastReq = parseInt(lastReq[0]);
         }
-
         switch(quality) {
             case 0:
                 chunkSize = size_video6[lastReq] / 1000000;
@@ -107,9 +96,9 @@ function RLRuleClass() {
             async: false,
             data: { mydata: JSON.stringify(data) }
         });
-        console.log('THIS INFORMATION:' + getPy.responseText);
+        console.log('QUALITY CHOSEN BY SERVER:' + getPy.responseText);
         let newQual = parseInt(getPy.responseText);
-        if (current === newQual) {
+        if (quality === newQual) {
             return SwitchRequest(context).create();
         }
 
