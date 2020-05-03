@@ -50,9 +50,8 @@ def calculate_rl_bitrate(prev_quality, buffer_size, rebuffering_time, video_chun
         state = np.zeros((S_INFO, S_LEN))
         # state = np.roll(state, -1, axis=1)
 
-
         #set state to input values
-        print(float(np.max(VIDEO_BIT_RATE_OPTIONS)))
+        # print(float(np.max(VIDEO_BIT_RATE_OPTIONS)))
         state[0, -1] = prev_quality / float(np.max(VIDEO_BIT_RATE_OPTIONS))
         state[1, -1] = buffer_size
         state[2, -1] = rebuffering_time

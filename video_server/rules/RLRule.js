@@ -2,7 +2,7 @@ var HighestBitrateRule;
 var startRebufferTime = 0;
 var endRebufferTime = 0;
 var startRebufferCalc = false;
-var latestRebufferTime = 0;
+var currentRebufferTime = 0;
 var lastReq = 0;
 var chunkSize = 0;
 var leftOverChunks = 0;
@@ -63,7 +63,7 @@ function RLRuleClass() {
         if(startRebufferCalc == true && bufferState.state != "bufferStalled"){
             console.log("calculating rebuffering");
             endRebufferTime = Date.now();
-            latestRebufferTime = (endRebufferTime - startRebufferTime)/1000;
+            currentRebufferTime = (endRebufferTime - startRebufferTime)/1000;
             startRebufferCalc = false;
         }
         if(dashMetrics.getCurrentHttpRequest(mediaType) != null){
@@ -100,12 +100,12 @@ function RLRuleClass() {
         leftOverChunks = vidSize - lastReq;
         console.log(lastReq);
         console.log(nextChunks);
-        var data = {'lastQuality': quality, 'buffer': buffer, 'RebufferTime': latestRebufferTime, 'chunkSize': chunkSize, 'chunkRemaining': leftOverChunks, 'nextChunks': nextChunks };
+        var data = {'currQuality': quality, 'buffer': buffer, 'rebufferTime': currentRebufferTime, 'chunkSize': chunkSize, 'chunksRemaining': leftOverChunks, 'nextChunks': nextChunks };
         var getPy = $.ajax({
             type: "POST",
             url: restAPI + "testABR",   
             async: false,
-            data: { mydata: data }
+            data: { mydata: JSON.stringify(data) }
         });
         console.log('THIS INFORMATION:' + getPy.responseText);
         let newQual = parseInt(getPy.responseText);
