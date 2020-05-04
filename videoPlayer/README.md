@@ -13,6 +13,7 @@
 # Dependencies
 - Requires Mininet (`sudo apt-get install mininet`) (Only if you want to run with Mininet as well)
 - Install controller as well (`sudo apt-get install openvswitch-testcontroller`) (Only if you want to run with Mininet as well)
+- Create a python2.7 virtualenv and run `pip install -r requirements.txt` and use the environment to run code
 - Google Chrome and Python
 - Requires Flask
 - Linux based OS
