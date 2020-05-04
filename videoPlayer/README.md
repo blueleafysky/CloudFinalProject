@@ -8,7 +8,7 @@
 - run `./runValidation`
 - Go to `http://localhost:8000` and play the video, you should see a graph of the bitrate/buffer underneath the video
 
-# General notes about running the system
+# General notes about running the system (Ignore these if you are running on GCP, that environment is already set up)
 
 # Dependencies
 - Requires Mininet (`sudo apt-get install mininet`) (Only if you want to run with Mininet as well)
