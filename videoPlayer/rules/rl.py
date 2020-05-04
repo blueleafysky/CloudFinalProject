@@ -16,6 +16,7 @@ RAND_RANGE = 1000
 BUFFER_NORM_FACTOR = 10.0
 PRETRAINED = "../rl/test/models/log_reward_equal.ckpt" #pathway to pretrained model file
 
+# Use pensieve RL to compare
 def calculate_rl_bitrate(prev_quality, buffer_size, rebuffering_time, video_chunk_size, next_video_chunk_sizes, chunks_remaining):
     """
     prev_quality: kbps

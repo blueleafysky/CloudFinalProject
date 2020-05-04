@@ -3,6 +3,8 @@
 
 - We aim to investigate how adaptive bitrate algorithms work in video streaming systems.
 - Based on Pensieve https://github.com/hongzimao/pensieve
+- Look under `/rl` for the reinforcement learning component
+- Look under `/videoPlayer` for our custom video player system
 
 ## Remote Desktop Setup
 - because of instance limitations for multiple validators, we decided to have a dedicated GCP instance for each validator. Because there is a video component to it, we also want the validators to be able to watch the video player. So we decided to go with NoMachine.
