@@ -3,7 +3,7 @@
 # Instructions for validation
 - For validation we aim to show our created video player can play video using different ABR algorithms
 - What you want to validate is that our can playback video and change ABR algorithms
-- To get connected to the GCP GUI follow [https://docs.google.com/document/d/1rnqRc_KpFMQkcl3EpjDw-fyKJKmMCyTpXr2QE1lmQek/edit?usp=sharing](https://docs.google.com/document/d/1rnqRc_KpFMQkcl3EpjDw-fyKJKmMCyTpXr2QE1lmQek/edit?usp=sharing)
+- To get connected to the GCP GUI follow [https://docs.google.com/document/d/1rnqRc_KpFMQkcl3EpjDw-fyKJKmMCyTpXr2QE1lmQek/edit?usp=sharing](https://docs.google.com/document/d/1rnqRc_KpFMQkcl3EpjDw-fyKJKmMCyTpXr2QE1lmQek/edit?usp=sharing) (Can just follow this google doc instructions, below instructions will be included there too)
 - go into `/home/demo/CloudFinalProject/videoPlayer/` to get to the video player (In the GCP Gui)
 - run `./runValidation`
 - Go to `http://localhost:8000` and play the video, you should see a graph of the bitrate/buffer underneath the video
